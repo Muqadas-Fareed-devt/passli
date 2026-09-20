@@ -3,7 +3,7 @@
 [![Python Version](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/django-5.1-green.svg)](https://www.djangoproject.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-11%20passing-brightgreen.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-22%20passing-brightgreen.svg)](tests/)
 [![Security](https://img.shields.io/badge/security-Zero--Knowledge-informational.svg)](SECURITY.md)
 
 **Passli** is a web-based personal records vault and cryptographic document-sharing platform designed for situations where you need to share specific sensitive records—without exposing your entire cloud account, master credentials, or sending unencrypted email attachments.
@@ -127,7 +127,7 @@ python manage.py test -v 2
 For a complete breakdown of features, phases, and ongoing work, see [PROGRESS.md](PROGRESS.md).
 
 - [x] **Phase 1**: Project Foundation, Anti-Slop UI & Landing Page (Complete)
-- [ ] **Phase 2**: User Authentication & Vault Dashboard
+- [x] **Phase 2**: User Authentication & Vault Dashboard (Complete)
 - [ ] **Phase 3**: Document Vault Management & Categorization
 - [ ] **Phase 4**: Controlled Share Pass Generation & Ephemeral QR Protocol
 - [ ] **Phase 5**: Recipient Verification Portal & Two-Factor Access Flow
