@@ -11,4 +11,5 @@ class LandingPageTests(TestCase):
         self.assertTemplateUsed(response, 'pages/landing.html')
         self.assertTemplateUsed(response, 'base.html')
         self.assertContains(response, 'Passli')
-        self.assertContains(response, 'Personal Document Vault')
+        self.assertContains(response, 'Launch Personal Vault')
+        self.assertContains(response, 'Ephemeral Share Pass Generator')

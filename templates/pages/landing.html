@@ -60,9 +60,9 @@
 </section>
 
 <!-- Centerpiece Interactive Share Pass Generator Sandbox -->
-<section class="sandbox-section" id="generator-sandbox">
+<section class="section section-subtle" id="generator-sandbox">
     <div class="container">
-        <div class="sandbox-header">
+        <div class="section-header">
             <div class="section-tag font-mono-data">Interactive Sandbox</div>
             <h2 class="section-title">Ephemeral Share Pass Generator</h2>
             <p class="section-subtitle">Configure client-side cryptographic constraints with real-time key derivation.</p>
@@ -238,7 +238,7 @@
                                 <rect fill="#0b1c30" height="5" width="5" x="125" y="105"></rect>
                             </svg>
                         </div>
-                        <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-primary);">Scan with mobile or scanner</div>
+                        <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-primary);">Scan with mobile or secure reader</div>
                         <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.1rem;">Zero payload loaded automatically</div>
                     </div>
 
@@ -285,40 +285,115 @@
     </div>
 </section>
 
-<!-- Visual Vault Showcase Section (Illustration Integration) -->
-<section class="showcase-section" id="vault-showcase">
+<!-- Authentic Real-World Use Cases (Featuring High-Quality Photography) -->
+<section class="section" id="vault-showcase">
     <div class="container">
-        <div class="showcase-grid">
-            <div>
-                <div class="section-tag font-mono-data">Vault Storage Architecture</div>
-                <h2 class="section-title">A single secure home for all your critical records</h2>
-                <p class="section-subtitle" style="margin-bottom: 1.5rem;">
-                    Upload medical lab reports, educational degrees, vehicle titles, and identity papers into a structured, isolated vault. View file metadata, preview PDFs and images safely, and manage access parameters at any time.
-                </p>
-                <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.875rem;">
-                    <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
-                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--brand-emerald);">check_circle</span>
-                        <span><strong>Structured Categories:</strong> Medical, Education, Vehicle, Personal, Professional, Other.</span>
-                    </div>
-                    <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
-                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--brand-emerald);">check_circle</span>
-                        <span><strong>Multi-Format Support:</strong> Safe previews for PDF documents, JPG, and PNG images.</span>
-                    </div>
-                    <div style="display: flex; align-items: flex-start; gap: 0.5rem;">
-                        <span class="material-symbols-outlined" style="font-size: 18px; color: var(--brand-emerald);">check_circle</span>
-                        <span><strong>Zero Cloud Leakage:</strong> Strict tenant isolation ensuring your files are never exposed to recipients.</span>
+        <div class="section-header">
+            <div class="section-tag font-mono-data">Real-World Utility</div>
+            <h2 class="section-title">Built for the moments when privacy matters most</h2>
+            <p class="section-subtitle">Common scenarios where unencrypted email attachments or full drive shares create unnecessary security risks.</p>
+        </div>
+
+        <div class="scenarios-grid">
+            <!-- Scenario 1: Clinic & Medical -->
+            <div class="scenario-card">
+                <div class="scenario-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80" alt="Doctor reviewing medical records on tablet">
+                    <div class="scenario-tag-badge">Medical Visits</div>
+                </div>
+                <div class="scenario-body">
+                    <h3 class="scenario-title">Clinic & Doctor Consultations</h3>
+                    <p class="scenario-text">
+                        Share blood panels, imaging scans, and prescriptions with a specialist for 30 minutes without exposing insurance numbers, IDs, or financial history.
+                    </p>
+                    <div class="scenario-footer">
+                        <span style="color: var(--brand-emerald); font-weight: 600;">✓ View-Only or Download</span>
+                        <span>Auto-shreds after visit</span>
                     </div>
                 </div>
             </div>
-            <div style="text-align: center;">
-                <img src="{% static 'img/vault_shield.jpg' %}" alt="Passli Personal Document Vault Security Architecture" style="width: 100%; max-width: 480px; border-radius: var(--radius-lg); border: 1px solid var(--border-light); box-shadow: var(--shadow-md);">
+
+            <!-- Scenario 2: Identity & KYC -->
+            <div class="scenario-card">
+                <div class="scenario-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80" alt="Professional credential and degree verification">
+                    <div class="scenario-tag-badge">Credentials & KYC</div>
+                </div>
+                <div class="scenario-body">
+                    <h3 class="scenario-title">Job Verification & Certifications</h3>
+                    <p class="scenario-text">
+                        Provide temporary authenticated access to diplomas and transcripts during hiring checks without sending unencrypted attachments over email.
+                    </p>
+                    <div class="scenario-footer">
+                        <span style="color: var(--brand-emerald); font-weight: 600;">✓ Cryptographic Hash</span>
+                        <span>Single-use view limit</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scenario 3: Vehicle & Asset Registration -->
+            <div class="scenario-card">
+                <div class="scenario-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=800&q=80" alt="Vehicle inspection and registration verification">
+                    <div class="scenario-tag-badge">Vehicle & Legal</div>
+                </div>
+                <div class="scenario-body">
+                    <h3 class="scenario-title">Vehicle Registration & Inspections</h3>
+                    <p class="scenario-text">
+                        Present proof of insurance and registration certificates to inspectors via instant QR scan on your phone screen without handing over personal logins.
+                    </p>
+                    <div class="scenario-footer">
+                        <span style="color: var(--brand-emerald); font-weight: 600;">✓ Instant Mobile QR</span>
+                        <span>10-minute expiry</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Defensive Capabilities Grid -->
-<section class="sandbox-section" id="features">
+<!-- Native Clean Sharing Protocol Workflow -->
+<section class="section section-subtle" id="how-it-works">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-tag font-mono-data">Sharing Protocol</div>
+            <h2 class="section-title">How Controlled Sharing Operates</h2>
+            <p class="section-subtitle">A straightforward three-stage architecture keeping you in complete ownership.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+            <!-- Step 1 -->
+            <div class="feature-tile" style="border-top: 3px solid var(--brand-navy);">
+                <div style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--brand-navy); margin-bottom: 0.5rem;">STEP 01</div>
+                <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--brand-navy); margin-bottom: 0.4rem;">Select & Generate</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.55;">
+                    Choose the specific files you want to present from your vault, choose expiration (10m - 24h), and generate a Share Pass with a QR code and random Share Key.
+                </p>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="feature-tile" style="border-top: 3px solid var(--brand-emerald);">
+                <div style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--brand-emerald); margin-bottom: 0.5rem;">STEP 02</div>
+                <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--brand-navy); margin-bottom: 0.4rem;">Recipient Scans & Authenticates</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.55;">
+                    The recipient scans the QR code to open the isolated access portal, then supplies the 8-character key. The server verifies the cryptographic hash before releasing files.
+                </p>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="feature-tile" style="border-top: 3px solid var(--brand-blue);">
+                <div style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--brand-blue); margin-bottom: 0.5rem;">STEP 03</div>
+                <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--brand-navy); margin-bottom: 0.4rem;">Automatic Shredding</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.55;">
+                    The recipient views or downloads only authorized files. As soon as the pass expires or is revoked, access is immediately blocked on the server.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Defensive Capabilities Bento Grid -->
+<section class="section" id="features">
     <div class="container">
         <div style="max-width: 600px; margin-bottom: 2.5rem;">
             <div class="section-tag font-mono-data">Defensive Capabilities</div>
@@ -382,45 +457,10 @@
     </div>
 </section>
 
-<!-- Visual Sharing Protocol Infographic Walkthrough -->
-<section class="showcase-section" id="how-it-works">
-    <div class="container">
-        <div class="sandbox-header">
-            <div class="section-tag font-mono-data">Sharing Protocol</div>
-            <h2 class="section-title">How Controlled Document Sharing Operates</h2>
-            <p class="section-subtitle">A secure three-stage protocol designed for zero full-account exposure.</p>
-        </div>
-
-        <div style="text-align: center; margin-bottom: 2.5rem;">
-            <img src="{% static 'img/share_protocol.jpg' %}" alt="Passli Secure QR Code Document Sharing Protocol" style="width: 100%; max-width: 820px; border-radius: var(--radius-lg); border: 1px solid var(--border-light); box-shadow: var(--shadow-sm);">
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem;">
-            <div class="feature-tile" style="border-left: 3px solid var(--brand-navy);">
-                <div style="font-size: 0.75rem; font-weight: 700; color: var(--brand-navy); margin-bottom: 0.35rem;" class="font-mono-data">STAGE 01</div>
-                <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.35rem;">Scan Protected QR</h4>
-                <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">The recipient scans the QR code, directing them exclusively to an isolated endpoint URL with zero unauthenticated payload.</p>
-            </div>
-
-            <div class="feature-tile" style="border-left: 3px solid var(--brand-emerald);">
-                <div style="font-size: 0.75rem; font-weight: 700; color: var(--brand-emerald); margin-bottom: 0.35rem;" class="font-mono-data">STAGE 02</div>
-                <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.35rem;">Enter Share Key</h4>
-                <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">The recipient supplies the separate 8-character key (e.g. <code>8K7P-42XM</code>), which is verified server-side against a secure hash.</p>
-            </div>
-
-            <div class="feature-tile" style="border-left: 3px solid var(--brand-blue);">
-                <div style="font-size: 0.75rem; font-weight: 700; color: var(--brand-blue); margin-bottom: 0.35rem;" class="font-mono-data">STAGE 03</div>
-                <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.35rem;">Authorized Access</h4>
-                <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">Access is granted strictly to the selected documents with owner-defined permissions (View-Only or Download) until expiration.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
 <!-- Institutional Security Comparison Table -->
-<section class="sandbox-section" id="security">
+<section class="section section-subtle" id="security">
     <div class="container">
-        <div class="sandbox-header">
+        <div class="section-header">
             <div class="section-tag font-mono-data">Architectural Assessment</div>
             <h2 class="section-title">Institutional Security Comparison</h2>
             <p class="section-subtitle">See how Passli’s cryptographic pass structure compares to legacy cloud links and unencrypted email attachments.</p>
