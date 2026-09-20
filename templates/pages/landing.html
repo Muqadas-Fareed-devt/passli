@@ -1,6 +1,7 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}Passli — Controlled Document Vault & Sharing Platform{% endblock %}
+{% block title %}Passli — Controlled Personal Document Vault & Secure Share Platform{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
@@ -163,8 +164,40 @@
     </div>
 </section>
 
-<!-- Core Features Section -->
-<section class="section" id="features">
+<!-- Visual Vault Showcase Section -->
+<section class="section">
+    <div class="container">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;">
+            <div>
+                <div class="section-tag">Encrypted Vault</div>
+                <h2 class="section-title">A single secure home for all your critical records</h2>
+                <p class="section-desc" style="margin-bottom: 1.5rem;">
+                    Upload medical lab reports, educational degrees, vehicle titles, and identity papers into a structured, isolated vault. View file metadata, preview PDFs and images safely, and manage access parameters at any time.
+                </p>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <div style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.875rem;">
+                        <span style="color: var(--status-emerald); font-weight: bold;">✓</span>
+                        <span><strong>Structured Categories:</strong> Medical, Education, Vehicle, Personal, Professional, Other.</span>
+                    </div>
+                    <div style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.875rem;">
+                        <span style="color: var(--status-emerald); font-weight: bold;">✓</span>
+                        <span><strong>Multi-Format Support:</strong> Crisp previews for PDF documents, JPG, and PNG images.</span>
+                    </div>
+                    <div style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.875rem;">
+                        <span style="color: var(--status-emerald); font-weight: bold;">✓</span>
+                        <span><strong>Zero Cloud Leakage:</strong> Strict tenant isolation ensuring your files are never exposed.</span>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <img src="{% static 'img/vault_shield.jpg' %}" alt="Passli Personal Document Vault Security Illustration" style="width: 100%; max-width: 500px; border-radius: var(--radius-lg); border: 1px solid var(--border-light); box-shadow: var(--shadow-md);">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Core Features Grid -->
+<section class="section section-subtle" id="features">
     <div class="container">
         <div class="section-header">
             <div class="section-tag">Capabilities</div>
@@ -238,39 +271,43 @@
     </div>
 </section>
 
-<!-- How It Works Section -->
-<section class="section section-subtle" id="how-it-works">
+<!-- How It Works & Visual Protocol Walkthrough -->
+<section class="section" id="how-it-works">
     <div class="container">
         <div class="section-header">
-            <div class="section-tag">Workflow</div>
-            <h2 class="section-title">How Passli Works</h2>
-            <p class="section-desc">A straightforward three-step protocol.</p>
+            <div class="section-tag">Sharing Protocol</div>
+            <h2 class="section-title">How Controlled Document Sharing Works</h2>
+            <p class="section-desc">A secure three-stage protocol that keeps you in complete control.</p>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 2.5rem;">
+            <img src="{% static 'img/share_protocol.jpg' %}" alt="Passli Secure QR Code Sharing Protocol" style="width: 100%; max-width: 820px; border-radius: var(--radius-lg); border: 1px solid var(--border-light); box-shadow: var(--shadow-sm);">
         </div>
 
         <div class="features-grid">
             <div class="feature-box" style="border-left: 3px solid var(--brand-navy);">
                 <div style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.5rem;">STEP 01</div>
-                <h3 class="feature-heading">Upload to your vault</h3>
-                <p class="feature-text">Store personal documents in structured categories. Files are stored securely and kept private to your account.</p>
+                <h3 class="feature-heading">1. Scan Protected QR</h3>
+                <p class="feature-text">The recipient scans the QR code. It directs them exclusively to an isolated, unguessable access endpoint with zero file data loaded.</p>
             </div>
 
             <div class="feature-box" style="border-left: 3px solid var(--brand-blue);">
                 <div style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--brand-blue); margin-bottom: 0.5rem;">STEP 02</div>
-                <h3 class="feature-heading">Issue a Share Pass</h3>
-                <p class="feature-text">Check only the specific files you want to present, set permissions and expiration, and generate a QR code with an access key.</p>
+                <h3 class="feature-heading">2. Enter Share Key</h3>
+                <p class="feature-text">The recipient enters the separate 8-character Share Key (e.g. <code>8K7P-42XM</code>). The server validates the cryptographic hash.</p>
             </div>
 
             <div class="feature-box" style="border-left: 3px solid var(--status-emerald);">
                 <div style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--status-emerald); margin-bottom: 0.5rem;">STEP 03</div>
-                <h3 class="feature-heading">Recipient access</h3>
-                <p class="feature-text">The recipient scans the QR code, enters the key, and views only the selected documents. Access expires automatically.</p>
+                <h3 class="feature-heading">3. Authorized Time-Limited Access</h3>
+                <p class="feature-text">Access is granted strictly to the selected documents with owner-defined permissions (View-Only or Download) until expiration.</p>
             </div>
         </div>
     </div>
 </section>
 
 <!-- Security Architecture Specification -->
-<section class="section" id="security">
+<section class="section section-subtle" id="security">
     <div class="container">
         <div class="section-header">
             <div class="section-tag">Security Architecture</div>
