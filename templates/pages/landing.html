@@ -6,124 +6,117 @@
 <!-- Hero Section -->
 <section class="hero-wrapper">
     <div class="container">
-        <div class="hero-content">
-            <div class="hero-pill" data-testid="hero-badge">
-                <span class="hero-pill-dot"></span>
-                <span>Cryptographic Document Vault &bull; Zero Account Exposure</span>
-            </div>
-            
-            <h1 class="hero-headline" data-testid="hero-title">
-                Share Sensitive Documents<br>
-                <span class="gradient-text">Without Giving Away Account Access</span>
-            </h1>
-            
-            <p class="hero-subtext" data-testid="hero-subtitle">
-                Passli generates temporary, QR-based Share Passes protected by unguessable endpoints and separate hashed access keys. Hand over only the files you pick, for only as long as you choose.
-            </p>
-            
-            <div class="hero-button-group">
-                <a href="{% url 'register' %}" class="btn btn-primary btn-lg btn-glow" data-testid="hero-get-started-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="8.5" cy="7" r="4"></circle>
-                        <line x1="20" y1="8" x2="20" y2="14"></line>
-                        <line x1="23" y1="11" x2="17" y2="11"></line>
-                    </svg>
-                    Create Free Vault
-                </a>
-                <a href="{% url 'login' %}" class="btn btn-secondary btn-lg" data-testid="hero-login-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-                        <polyline points="10 17 15 12 10 7"></polyline>
-                        <line x1="15" y1="12" x2="3" y2="12"></line>
-                    </svg>
-                    Sign In to Vault
-                </a>
-            </div>
+        <div class="hero-pill" data-testid="hero-badge">
+            <span class="hero-pill-dot"></span>
+            <span>Zero Account Exposure &bull; Ephemeral Key Protocol</span>
+        </div>
+        
+        <h1 class="hero-title" data-testid="hero-title">
+            Share Personal Documents<br>
+            <span class="title-accent">Without Exposing Your Vault</span>
+        </h1>
+        
+        <p class="hero-subtitle" data-testid="hero-subtitle">
+            Passli generates single-purpose Share Passes protected by unguessable endpoints and temporary 8-character access keys. Hand over only the documents you pick, for only as long as you specify.
+        </p>
+        
+        <div class="hero-cta-group">
+            <a href="{% url 'register' %}" class="btn btn-primary btn-lg" data-testid="hero-get-started-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                Create Personal Vault
+            </a>
+            <a href="{% url 'login' %}" class="btn btn-secondary btn-lg" data-testid="hero-login-btn">
+                Sign In
+            </a>
+        </div>
 
-            <!-- Trust Highlights Bar -->
-            <div class="trust-badges-bar">
-                <div class="trust-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    <span>OWASP Top 10 Protected</span>
-                </div>
-                <div class="trust-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    <span>Zero Plaintext Key Storage</span>
-                </div>
-                <div class="trust-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    <span>Server-Side Instant Revocation</span>
-                </div>
-                <div class="trust-item">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    <span>Strict View / Download RBAC</span>
-                </div>
+        <!-- Trust Verification Bar -->
+        <div class="trust-bar">
+            <div class="trust-cell">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>SHA-256 Key Hashing</span>
+            </div>
+            <div class="trust-cell">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Server-Enforced Expiration</span>
+            </div>
+            <div class="trust-cell">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Single-Click Revocation</span>
+            </div>
+            <div class="trust-cell">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span>Strict View / Download RBAC</span>
             </div>
         </div>
 
-        <!-- Interactive Live Share Pass Simulator -->
-        <div class="demo-preview-card" data-testid="interactive-simulator">
-            <div class="demo-preview-header">
-                <div class="demo-preview-title">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                        <circle cx="8.5" cy="8.5" r="1.5"/>
-                        <polyline points="21 15 16 10 5 21"/>
+        <!-- Interactive Share Pass Simulator (High-Craft Utility) -->
+        <div class="simulator-card" data-testid="interactive-simulator">
+            <div class="simulator-topbar">
+                <div class="simulator-title-group">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
                     </svg>
-                    <span>Interactive Share Pass Simulator</span>
+                    <span>Pass Generation Simulator</span>
                 </div>
-                <div class="status-badge-live">● Live Demo Engine</div>
+                <div id="sim-selected-count" style="font-family: var(--font-mono); font-size: 0.75rem; background: rgba(59, 130, 246, 0.15); color: #93c5fd; padding: 0.2rem 0.5rem; border-radius: 4px; border: 1px solid rgba(59, 130, 246, 0.3);">
+                    2 Documents Selected
+                </div>
             </div>
 
-            <div class="simulator-grid">
-                <!-- Left: Document & Pass Configuration -->
-                <div class="sim-control-panel">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 0.875rem; font-weight: 600; color: #cbd5e1;">Select Vault Files to Share:</span>
-                        <span id="sim-selected-count" style="font-size: 0.8rem; background: rgba(59, 130, 246, 0.2); color: #93c5fd; padding: 0.15rem 0.5rem; border-radius: 4px;">2 Selected</span>
+            <div class="simulator-body">
+                <!-- Left: Interactive Vault Selection -->
+                <div>
+                    <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.5rem;">
+                        1. Select Specific Vault Documents:
                     </div>
-
+                    
                     <div class="sim-doc-list">
-                        <label class="sim-doc-item">
-                            <div class="sim-doc-info">
-                                <div class="sim-doc-icon">🩺</div>
+                        <label class="sim-doc-row selected">
+                            <div class="sim-doc-meta">
+                                <span class="sim-doc-type-badge">PDF</span>
                                 <div>
-                                    <div style="font-weight: 600; font-size: 0.9rem;">Lab_Blood_Panel_2026.pdf</div>
-                                    <div style="font-size: 0.75rem; color: #94a3b8;">Medical &bull; 1.4 MB</div>
+                                    <div class="sim-doc-name">Medical_Blood_Report_2026.pdf</div>
+                                    <div class="sim-doc-category">Medical &bull; 1.4 MB</div>
                                 </div>
                             </div>
-                            <input type="checkbox" class="sim-doc-checkbox" checked style="accent-color: #3b82f6; width: 1.1rem; height: 1.1rem;">
+                            <input type="checkbox" class="sim-doc-checkbox" checked style="accent-color: #3b82f6; width: 1.05rem; height: 1.05rem;">
                         </label>
 
-                        <label class="sim-doc-item">
-                            <div class="sim-doc-info">
-                                <div class="sim-doc-icon">🪪</div>
+                        <label class="sim-doc-row selected">
+                            <div class="sim-doc-meta">
+                                <span class="sim-doc-type-badge">PNG</span>
                                 <div>
-                                    <div style="font-weight: 600; font-size: 0.9rem;">National_ID_Card.png</div>
-                                    <div style="font-size: 0.75rem; color: #94a3b8;">Identity &bull; 850 KB</div>
+                                    <div class="sim-doc-name">National_ID_Card.png</div>
+                                    <div class="sim-doc-category">Personal ID &bull; 820 KB</div>
                                 </div>
                             </div>
-                            <input type="checkbox" class="sim-doc-checkbox" checked style="accent-color: #3b82f6; width: 1.1rem; height: 1.1rem;">
+                            <input type="checkbox" class="sim-doc-checkbox" checked style="accent-color: #3b82f6; width: 1.05rem; height: 1.05rem;">
                         </label>
 
-                        <label class="sim-doc-item">
-                            <div class="sim-doc-info">
-                                <div class="sim-doc-icon">🚗</div>
+                        <label class="sim-doc-row">
+                            <div class="sim-doc-meta">
+                                <span class="sim-doc-type-badge">PDF</span>
                                 <div>
-                                    <div style="font-weight: 600; font-size: 0.9rem;">Vehicle_Registration_Cert.pdf</div>
-                                    <div style="font-size: 0.75rem; color: #94a3b8;">Vehicle &bull; 2.1 MB</div>
+                                    <div class="sim-doc-name">Vehicle_Registration_Certificate.pdf</div>
+                                    <div class="sim-doc-category">Vehicle &bull; 2.1 MB</div>
                                 </div>
                             </div>
-                            <input type="checkbox" class="sim-doc-checkbox" style="accent-color: #3b82f6; width: 1.1rem; height: 1.1rem;">
+                            <input type="checkbox" class="sim-doc-checkbox" style="accent-color: #3b82f6; width: 1.05rem; height: 1.05rem;">
                         </label>
                     </div>
 
-                    <!-- Pass Options -->
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <!-- Pass Expiration & Permissions Grid -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
                         <div>
-                            <label style="font-size: 0.8rem; font-weight: 600; color: #94a3b8; display: block; margin-bottom: 0.35rem;">Pass Expiration</label>
-                            <select id="sim-expiry-select" class="form-select" style="background: rgba(15, 23, 42, 0.9); border: 1px solid var(--border-medium); color: #ffffff; padding: 0.5rem; font-size: 0.85rem; border-radius: 8px;">
+                            <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-tertiary); display: block; margin-bottom: 0.35rem;">Pass Validity</label>
+                            <select id="sim-expiry-select" style="width: 100%; background: var(--bg-surface-elevated); border: 1px solid var(--border-hairline); color: var(--text-primary); padding: 0.45rem; font-size: 0.8rem; border-radius: 6px;">
                                 <option value="10m">10 Minutes</option>
                                 <option value="30m" selected>30 Minutes</option>
                                 <option value="1h">1 Hour</option>
@@ -131,63 +124,64 @@
                             </select>
                         </div>
                         <div>
-                            <label style="font-size: 0.8rem; font-weight: 600; color: #94a3b8; display: block; margin-bottom: 0.35rem;">Permissions</label>
-                            <div style="display: flex; gap: 0.75rem; align-items: center; padding-top: 0.35rem;">
-                                <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 0.35rem;">
+                            <label style="font-size: 0.75rem; font-weight: 600; color: var(--text-tertiary); display: block; margin-bottom: 0.35rem;">Recipient Permissions</label>
+                            <div style="display: flex; gap: 0.75rem; padding-top: 0.35rem;">
+                                <label style="font-size: 0.8rem; display: flex; align-items: center; gap: 0.3rem;">
                                     <input type="checkbox" id="sim-perm-view" checked disabled style="accent-color: #3b82f6;"> View
                                 </label>
-                                <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 0.35rem;">
+                                <label style="font-size: 0.8rem; display: flex; align-items: center; gap: 0.3rem;">
                                     <input type="checkbox" id="sim-perm-download" checked style="accent-color: #3b82f6;"> Download
                                 </label>
                             </div>
                         </div>
                     </div>
 
-                    <button type="button" id="sim-generate-btn" class="btn btn-primary btn-block" style="margin-top: 0.5rem;">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    <button type="button" id="sim-generate-btn" class="btn btn-primary btn-block">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
                         </svg>
-                        Generate Share Pass
+                        Generate Pass & Key
                     </button>
                 </div>
 
-                <!-- Right: Generated Share Pass Artifact -->
+                <!-- Right: Generated Recipient Artifact -->
                 <div class="sim-pass-output">
-                    <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8; margin-bottom: 0.75rem;">
-                        Recipient Access Pass
+                    <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">
+                        Ephemeral Access Artifact
                     </div>
 
-                    <div class="sim-qr-box" id="sim-qr-preview">
-                        <!-- Modern SVG QR Code Representation -->
-                        <svg viewBox="0 0 100 100" width="120" height="120" fill="#0f172a">
-                            <rect x="10" y="10" width="26" height="26" rx="4" fill="#0f172a"/>
-                            <rect x="16" y="16" width="14" height="14" rx="2" fill="#ffffff"/>
-                            <rect x="20" y="20" width="6" height="6" fill="#0f172a"/>
+                    <div class="sim-qr-canvas" id="sim-qr-preview">
+                        <svg viewBox="0 0 100 100" width="110" height="110" fill="#090d14">
+                            <rect x="10" y="10" width="26" height="26" rx="3" fill="#090d14"/>
+                            <rect x="16" y="16" width="14" height="14" rx="1.5" fill="#ffffff"/>
+                            <rect x="20" y="20" width="6" height="6" fill="#090d14"/>
                             
-                            <rect x="64" y="10" width="26" height="26" rx="4" fill="#0f172a"/>
-                            <rect x="70" y="16" width="14" height="14" rx="2" fill="#ffffff"/>
-                            <rect x="74" y="20" width="6" height="6" fill="#0f172a"/>
+                            <rect x="64" y="10" width="26" height="26" rx="3" fill="#090d14"/>
+                            <rect x="70" y="16" width="14" height="14" rx="1.5" fill="#ffffff"/>
+                            <rect x="74" y="20" width="6" height="6" fill="#090d14"/>
                             
-                            <rect x="10" y="64" width="26" height="26" rx="4" fill="#0f172a"/>
-                            <rect x="16" y="70" width="14" height="14" rx="2" fill="#ffffff"/>
-                            <rect x="20" y="74" width="6" height="6" fill="#0f172a"/>
+                            <rect x="10" y="64" width="26" height="26" rx="3" fill="#090d14"/>
+                            <rect x="16" y="70" width="14" height="14" rx="1.5" fill="#ffffff"/>
+                            <rect x="20" y="74" width="6" height="6" fill="#090d14"/>
 
-                            <rect x="42" y="15" width="8" height="8" fill="#0f172a"/>
-                            <rect x="42" y="30" width="8" height="8" fill="#0f172a"/>
-                            <rect x="52" y="42" width="8" height="8" fill="#0f172a"/>
-                            <rect x="64" y="52" width="10" height="10" fill="#0f172a"/>
-                            <rect x="42" y="64" width="8" height="8" fill="#0f172a"/>
-                            <rect x="78" y="78" width="12" height="12" fill="#0f172a"/>
+                            <rect x="42" y="15" width="8" height="8" fill="#090d14"/>
+                            <rect x="42" y="30" width="8" height="8" fill="#090d14"/>
+                            <rect x="52" y="42" width="8" height="8" fill="#090d14"/>
+                            <rect x="64" y="52" width="10" height="10" fill="#090d14"/>
+                            <rect x="42" y="64" width="8" height="8" fill="#090d14"/>
+                            <rect x="78" y="78" width="12" height="12" fill="#090d14"/>
                         </svg>
                     </div>
 
-                    <div style="font-size: 0.8rem; color: #94a3b8;">Temporary Share Key</div>
-                    <div class="sim-key-display" id="sim-key-text">8K7P-42XM</div>
+                    <div style="font-size: 0.75rem; color: var(--text-tertiary); margin-bottom: 0.25rem;">Separate Share Key</div>
+                    <div class="sim-key-pill" id="sim-key-text">8K7P-42XM</div>
 
-                    <div style="display: flex; gap: 1rem; font-size: 0.8rem; color: #64748b;">
-                        <span>Expires: <strong id="sim-expiry-text" style="color: #cbd5e1;">30 Minutes</strong></span>
+                    <div style="font-size: 0.75rem; color: var(--text-tertiary); display: flex; gap: 0.5rem; align-items: center;">
+                        <span>Expires: <strong id="sim-expiry-text" style="color: var(--text-secondary);">30 Minutes</strong></span>
                         <span>&bull;</span>
-                        <span style="color: #10b981;">Dual-Auth Enabled</span>
+                        <span style="color: var(--accent-emerald);">Validated Server-Side</span>
                     </div>
                 </div>
             </div>
@@ -195,73 +189,73 @@
     </div>
 </section>
 
-<!-- Features Section -->
+<!-- Features Grid -->
 <section class="section section-alt" id="features">
     <div class="container">
         <div class="section-head">
-            <div class="section-tag">Core Capabilities</div>
+            <div class="section-tag">Core Specifications</div>
             <h2 class="section-title" data-testid="features-title">Engineered for Strict Document Sovereignty</h2>
-            <p class="section-subtitle">Never send full account credentials or unencrypted attachments again.</p>
+            <p class="section-sub">Controlled document sharing without giving recipients permanent or full-vault access.</p>
         </div>
 
         <div class="grid-3">
-            <div class="glass-card" data-testid="feature-card-vault">
-                <div class="card-icon icon-blue">
+            <div class="craft-card" data-testid="feature-card-vault">
+                <div class="craft-icon icon-blue">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
                 </div>
                 <h3 class="card-title">Encrypted Document Vault</h3>
                 <p class="card-desc">
-                    Categorize sensitive medical records, vehicle titles, degrees, and identification cards in a secure, isolated storage architecture.
+                    Categorize sensitive medical records, vehicle registrations, and identity documents in an isolated, secure account vault.
                 </p>
             </div>
 
-            <div class="glass-card" data-testid="feature-card-passes">
-                <div class="card-icon icon-emerald">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            <div class="craft-card" data-testid="feature-card-passes">
+                <div class="craft-icon icon-emerald">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
                 </div>
                 <h3 class="card-title">Granular Share Passes</h3>
                 <p class="card-desc">
-                    Hand-pick individual documents for each situation (e.g. only Blood Tests for the doctor) without exposing other personal vault items.
+                    Hand-pick individual documents for each situation (e.g. only lab tests for a clinic) without exposing unrelated files.
                 </p>
             </div>
 
-            <div class="glass-card" data-testid="feature-card-dual-auth">
-                <div class="card-icon icon-cyan">
+            <div class="craft-card" data-testid="feature-card-dual-auth">
+                <div class="craft-icon icon-cyan">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 </div>
                 <h3 class="card-title">QR + Key Dual Authorization</h3>
                 <p class="card-desc">
-                    QR codes only point to protected endpoints. Recipients must supply the separate temporary Share Key before any file metadata is unlocked.
+                    QR codes only point to protected endpoints. Recipients must supply the separate temporary Share Key before any file is unlocked.
                 </p>
             </div>
 
-            <div class="glass-card" data-testid="feature-card-expiration">
-                <div class="card-icon icon-rose">
+            <div class="craft-card" data-testid="feature-card-expiration">
+                <div class="craft-icon icon-rose">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 </div>
                 <h3 class="card-title">Server-Enforced Expiration</h3>
                 <p class="card-desc">
-                    Passes automatically self-destruct after your selected timeframe (10m, 30m, 24h). The backend denies expired requests regardless of cache.
+                    Passes automatically expire after your selected window (10m, 30m, 24h). The backend denies expired requests immediately.
                 </p>
             </div>
 
-            <div class="glass-card" data-testid="feature-card-permissions">
-                <div class="card-icon icon-purple">
+            <div class="craft-card" data-testid="feature-card-permissions">
+                <div class="craft-icon icon-blue">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 </div>
-                <h3 class="card-title">Granular Permission Gates</h3>
+                <h3 class="card-title">View vs. Download Controls</h3>
                 <p class="card-desc">
-                    Allow recipients to preview documents directly in-browser while strictly preventing unauthorized raw file downloads.
+                    Enforce whether recipients can only preview documents on-screen or download raw files to their device.
                 </p>
             </div>
 
-            <div class="glass-card" data-testid="feature-card-audit">
-                <div class="card-icon icon-amber">
+            <div class="craft-card" data-testid="feature-card-audit">
+                <div class="craft-icon icon-amber">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                 </div>
-                <h3 class="card-title">Real-Time Access Auditing</h3>
+                <h3 class="card-title">Real-Time Access Logs</h3>
                 <p class="card-desc">
-                    Review every validation attempt, document access, and timestamp in your dashboard. Instant single-click pass revocation.
+                    Monitor when your share passes were validated, accessed, or revoked with complete server-side timestamped event records.
                 </p>
             </div>
         </div>
@@ -272,81 +266,80 @@
 <section class="section" id="how-it-works">
     <div class="container">
         <div class="section-head">
-            <div class="section-tag">User Flow</div>
-            <h2 class="section-title">How Passli Works</h2>
-            <p class="section-subtitle">Three intuitive steps from upload to controlled sharing.</p>
+            <div class="section-tag">Workflow</div>
+            <h2 class="section-title">How Passli Operates</h2>
+            <p class="section-sub">A streamlined, secure three-stage protocol.</p>
         </div>
 
-        <div class="workflow-grid">
-            <div class="workflow-card">
-                <div class="step-number">01</div>
-                <h3 class="card-title">Upload to Vault</h3>
-                <p class="card-desc">Add PDFs and images to your personal encrypted vault. Organize by Medical, Education, Vehicle, or Custom tags.</p>
+        <div class="steps-grid">
+            <div class="step-box">
+                <div class="step-idx">STAGE // 01</div>
+                <h3 class="card-title">Upload & Categorize</h3>
+                <p class="card-desc">Store medical records, identity documents, and certificates in your encrypted personal vault.</p>
             </div>
 
-            <div class="workflow-card">
-                <div class="step-number">02</div>
-                <h3 class="card-title">Generate Share Pass</h3>
-                <p class="card-desc">Select specific documents, toggle download permissions, set an expiration window, and receive your QR code and Share Key.</p>
+            <div class="step-box">
+                <div class="step-idx">STAGE // 02</div>
+                <h3 class="card-title">Issue Temporary Pass</h3>
+                <p class="card-desc">Select specific documents, configure permissions, set the expiration timer, and generate a QR endpoint + Share Key.</p>
             </div>
 
-            <div class="workflow-card">
-                <div class="step-number">03</div>
-                <h3 class="card-title">Recipient Access</h3>
-                <p class="card-desc">The recipient scans the QR code, enters the Share Key, and views only the authorized files before the pass expires.</p>
+            <div class="step-box">
+                <div class="step-idx">STAGE // 03</div>
+                <h3 class="card-title">Keyed Recipient Access</h3>
+                <p class="card-desc">The recipient scans the QR code and supplies the Share Key to access only the permitted files before expiration.</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Security Architecture Deep Dive -->
+<!-- Security Architecture Protocol Comparison -->
 <section class="section section-alt" id="security">
     <div class="container">
         <div class="section-head">
-            <div class="section-tag">Security Protocol</div>
-            <h2 class="section-title">Zero-Exposure Security Architecture</h2>
-            <p class="section-subtitle">Designed to eliminate the biggest vulnerabilities in traditional document sharing.</p>
+            <div class="section-tag">Security Architecture</div>
+            <h2 class="section-title">Security Comparison</h2>
+            <p class="section-sub">Designed to eliminate risks inherent in traditional unencrypted file sharing.</p>
         </div>
 
-        <div style="background: var(--bg-card); border: 1px solid var(--border-medium); border-radius: var(--radius-xl); padding: 2.5rem; backdrop-filter: var(--glass-blur);">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-                <div>
-                    <h4 style="color: #fb7185; font-size: 1.15rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                        <span>⚠️</span> Traditional Document Sharing
-                    </h4>
-                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.85rem; color: #94a3b8; font-size: 0.925rem;">
-                        <li style="display: flex; gap: 0.5rem;"><span style="color: #fb7185;">✕</span> Sending full PDFs over unencrypted email or chats</li>
-                        <li style="display: flex; gap: 0.5rem;"><span style="color: #fb7185;">✕</span> Sharing cloud drive folders giving access to unrelated files</li>
-                        <li style="display: flex; gap: 0.5rem;"><span style="color: #fb7185;">✕</span> Public QR codes where anyone scanning gets direct access</li>
-                        <li style="display: flex; gap: 0.5rem;"><span style="color: #fb7185;">✕</span> No expiration — files remain accessible indefinitely</li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 style="color: #34d399; font-size: 1.15rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                        <span>🛡️</span> The Passli Protocol
-                    </h4>
-                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.85rem; color: #cbd5e1; font-size: 0.925rem;">
-                        <li style="display: flex; gap: 0.5rem;"><span style="color: #34d399;">✓</span> Isolated cryptographic token URL per Share Pass</li>
-                        <li style="display: flex; gap: 0.5rem;"><span style="color: #34d399;">✓</span> 8-character hashed access key required for recipient access</li>
-                        <li style="display: flex; gap: 0.5rem;"><span style="color: #34d399;">✓</span> Server-side authorization check for every file preview or download</li>
-                        <li style="display: flex; gap: 0.5rem;"><span style="color: #34d399;">✓</span> Automatic expiration + 1-click immediate owner revocation</li>
-                    </ul>
-                </div>
-            </div>
+        <div class="craft-card" style="padding: 0; overflow-x: auto;">
+            <table class="protocol-table">
+                <thead>
+                    <tr>
+                        <th>Security Vector</th>
+                        <th>Traditional File Sharing</th>
+                        <th>Passli Security Protocol</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="font-weight: 600; color: var(--text-primary);">Endpoint Discovery</td>
+                        <td>Predictable URLs or shared cloud folders</td>
+                        <td style="color: var(--accent-emerald);">Cryptographically secure unguessable tokens</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: var(--text-primary);">Access Authentication</td>
+                        <td>Direct public link or full account invite</td>
+                        <td style="color: var(--accent-emerald);">Separate temporary 8-char key hashed with SHA-256</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: var(--text-primary);">Expiration Enforcement</td>
+                        <td>Permanent links (forgotten over time)</td>
+                        <td style="color: var(--accent-emerald);">Server-side timed invalidation (10m - 24h)</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: var(--text-primary);">Revocation Speed</td>
+                        <td>Manual file deletion required</td>
+                        <td style="color: var(--accent-emerald);">Instant 1-click revocation from owner dashboard</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: var(--text-primary);">Granular Permissions</td>
+                        <td>All-or-nothing file access</td>
+                        <td style="color: var(--accent-emerald);">Server-gated View-Only vs. Download permissions</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-    </div>
-</section>
-
-<!-- Bottom Call to Action -->
-<section style="padding: 5rem 0; text-align: center; background: radial-gradient(circle at center, rgba(59, 130, 246, 0.12), transparent 70%);">
-    <div class="container">
-        <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem;">Ready to Secure Your Personal Files?</h2>
-        <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem;">
-            Create your account today and experience controlled, privacy-first document sharing in seconds.
-        </p>
-        <a href="{% url 'register' %}" class="btn btn-primary btn-lg btn-glow">
-            Get Started with Passli Now
-        </a>
     </div>
 </section>
 {% endblock %}
