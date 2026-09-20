@@ -33,4 +33,12 @@
 
 ## 6. UI/UX Aesthetics & Design Philosophy
 - **Rich Aesthetics**: Interfaces must look modern, polished, and premium (sleek dark/light modes, refined typography, smooth micro-interactions).
-- **Avoid Bland UI**: Never build generic MVP designs. Use glassmorphism, subtle shadows, harmonic palettes, and responsive layouts.
+- **Avoid Bland UI & AI Slop**: Never build generic MVP designs or AI-slop tropes (no repetitive eyebrow tags, no fake clip-art, no neon radial glow traps). Adhere strictly to `anti-ai-slop`, `no-slop-ui`, and `unslop-ui v2` principles.
+
+## 7. CodeRabbit-Grade Autonomous Review & Rewrite Protocol
+- **Autonomous Multi-Point Inspection**: After writing or modifying code, execute rigorous automated review covering:
+  1. *Security Vulnerabilities* (injection, auth bypass, secret leakage, CSRF/XSS vectors)
+  2. *Code Quality & Clean Architecture* (DRY, modularity, type safety, error boundaries)
+  3. *Performance & Optimization* (N+1 queries, static caching, DOM footprint)
+  4. *Reliability & Edge Cases* (unhandled exceptions, missing null checks, boundary conditions)
+- **Iterative Rewrite Loop**: Evaluate all review findings. If any critical, major, or quality defects are identified, rewrite the offending code immediately and re-verify until 100% compliant before committing.
