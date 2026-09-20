@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Passli — Controlled Document Sharing Platform{% endblock %}</title>
+    <title>{% block title %}Passli — Controlled Document Vault & Secure Sharing{% endblock %}</title>
     <meta name="description" content="{% block meta_description %}Passli lets you create time-gated, cryptographic Share Passes for sensitive records without handing over master credentials or cloud passwords.{% endblock %}">
     
     <!-- Google Fonts & Material Symbols -->
@@ -13,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
     
-    <!-- Passli Pure Vanilla CSS -->
+    <!-- Passli Stylesheet -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
@@ -31,10 +31,11 @@
                     <span class="brand-dot"></span>
                 </a>
 
-                <!-- Navigation Links -->
+                <!-- Navigation Links with exact corresponding targets -->
                 <ul class="nav-links">
                     <li><a href="{% url 'landing' %}" class="nav-link" data-testid="nav-home">Platform</a></li>
-                    <li><a href="#vault-showcase" class="nav-link">Vault Architecture</a></li>
+                    <li><a href="#generator-sandbox" class="nav-link">Interactive Demo</a></li>
+                    <li><a href="#use-cases" class="nav-link">Use Cases</a></li>
                     <li><a href="#how-it-works" class="nav-link">Protocol</a></li>
                     <li><a href="#security" class="nav-link">Security Specs</a></li>
                 </ul>
@@ -92,12 +93,13 @@
                         <span>Passli</span>
                     </div>
                     <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
-                        &copy; 2026 Passli Cryptographic Systems. SOC 2 Type II Certified.
+                        &copy; 2026 Passli Cryptographic Systems. SOC 2 Type II Certified. Zero-Knowledge Audited.
                     </p>
                 </div>
                 <ul class="footer-nav">
-                    <li><a href="#vault-showcase">Vault Architecture</a></li>
-                    <li><a href="#how-it-works">Sharing Protocol</a></li>
+                    <li><a href="#generator-sandbox">Interactive Demo</a></li>
+                    <li><a href="#use-cases">Use Cases</a></li>
+                    <li><a href="#how-it-works">Protocol</a></li>
                     <li><a href="#security">Security Specs</a></li>
                 </ul>
             </div>

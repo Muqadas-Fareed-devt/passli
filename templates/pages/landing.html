@@ -4,68 +4,72 @@
 {% block title %}Passli — Controlled Document Sharing & Ephemeral Vault{% endblock %}
 
 {% block content %}
-<!-- Hero Section -->
+<!-- Split-Hero Section with Authentic Photography -->
 <section class="hero-section">
     <div class="container">
-        <!-- Eyebrow Badge -->
-        <div class="hero-pill" data-testid="hero-badge">
-            <span class="pulse-dot"></span>
-            <span class="font-mono-data">Zero-Knowledge Architecture &bull; AES-256 + Ephemeral Keys</span>
-        </div>
+        <div class="hero-grid">
+            <!-- Left Hero Content -->
+            <div>
+                <h1 class="hero-title" data-testid="hero-title">
+                    Share only the records you choose.<br>
+                    <span class="hero-title-sub">Never your account credentials.</span>
+                </h1>
 
-        <!-- Main Headline -->
-        <h1 class="hero-title" data-testid="hero-title">
-            Share only the documents you choose.<br>
-            <span class="hero-title-sub">Never your account credentials.</span>
-        </h1>
+                <p class="hero-subtitle" data-testid="hero-subtitle">
+                    Passli lets you generate time-gated, cryptographic Share Passes for sensitive documents—without handing over master logins, permanent drive links, or unencrypted email attachments.
+                </p>
 
-        <!-- Subtitle -->
-        <p class="hero-subtitle" data-testid="hero-subtitle">
-            Passli lets you create time-gated, cryptographic Share Passes for sensitive records—without handing over master credentials, permanent links, or cloud passwords.
-        </p>
+                <div class="hero-cta">
+                    <a href="{% url 'register' %}" class="btn btn-primary btn-lg" data-testid="hero-get-started-btn">
+                        <span class="material-symbols-outlined">shield</span> Launch Personal Vault
+                    </a>
+                    <a href="{% url 'login' %}" class="btn btn-secondary btn-lg" data-testid="hero-login-btn">
+                        Sign In
+                    </a>
+                </div>
 
-        <!-- Hero Actions -->
-        <div class="hero-cta">
-            <a href="{% url 'register' %}" class="btn btn-primary btn-lg" data-testid="hero-get-started-btn">
-                <span class="material-symbols-outlined">shield</span> Launch Personal Vault
-            </a>
-            <a href="{% url 'login' %}" class="btn btn-secondary btn-lg" data-testid="hero-login-btn">
-                Sign In
-            </a>
-        </div>
-
-        <!-- Trust Badges -->
-        <div class="hero-trust-bar">
-            <div class="trust-item">
-                <span class="material-symbols-outlined">verified_user</span>
-                <span>SOC 2 Type II Architecture</span>
+                <div class="hero-trust-list">
+                    <div class="trust-row-item">
+                        <span class="material-symbols-outlined">check_circle</span>
+                        <span>Client-side AES-256 envelope encryption before upload</span>
+                    </div>
+                    <div class="trust-row-item">
+                        <span class="material-symbols-outlined">check_circle</span>
+                        <span>Hardware-enforced expiration & 1-click revocation</span>
+                    </div>
+                    <div class="trust-row-item">
+                        <span class="material-symbols-outlined">check_circle</span>
+                        <span>Zero master credential leakage to recipients</span>
+                    </div>
+                </div>
             </div>
-            <span>&bull;</span>
-            <div class="trust-item">
-                <span class="material-symbols-outlined">key</span>
-                <span>Client-Side Key Hashing</span>
-            </div>
-            <span>&bull;</span>
-            <div class="trust-item">
-                <span class="material-symbols-outlined">timer</span>
-                <span>Server-Enforced Expiration</span>
-            </div>
-            <span>&bull;</span>
-            <div class="trust-item">
-                <span class="material-symbols-outlined">policy</span>
-                <span>Immediate 1-Click Revocation</span>
+
+            <!-- Right Hero Visual: Authentic Security Operations Photography -->
+            <div class="hero-visual-frame" data-testid="hero-image-container">
+                <img 
+                    src="https://images.unsplash.com/photo-1555421689-491a97ff2040?auto=format&fit=crop&w=1000&q=80" 
+                    alt="Cryptographic key validation and secure document access verification"
+                    class="hero-visual-img"
+                    loading="eager"
+                >
+                <div class="hero-floating-chip font-mono-data">
+                    <div style="display: flex; align-items: center; gap: 0.4rem;">
+                        <span class="pulse-dot"></span>
+                        <span>ACTIVE PASS ENVELOPE</span>
+                    </div>
+                    <span style="color: var(--brand-emerald); font-weight: 600;">AES-256-GCM</span>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Centerpiece Interactive Share Pass Generator Sandbox -->
+<!-- Interactive Share Pass Generator Sandbox -->
 <section class="section section-subtle" id="generator-sandbox">
     <div class="container">
         <div class="section-header">
-            <div class="section-tag font-mono-data">Interactive Sandbox</div>
-            <h2 class="section-title">Ephemeral Share Pass Generator</h2>
-            <p class="section-subtitle">Configure client-side cryptographic constraints with real-time key derivation.</p>
+            <h2 class="section-title">Interactive Share Pass Generator</h2>
+            <p class="section-subtitle">Experience how client-side cryptographic constraints and real-time key derivation protect your documents.</p>
         </div>
 
         <!-- Main Generator Component Card -->
@@ -79,7 +83,7 @@
                             <div class="card-title-main">Create Controlled Share Pass</div>
                             <div class="card-subtitle-main">Define access envelope and file boundary</div>
                         </div>
-                        <div class="status-badge">
+                        <div class="status-badge font-mono-data">
                             <span class="pulse-dot"></span>
                             <span>Token Ready</span>
                         </div>
@@ -89,7 +93,7 @@
                     <div>
                         <div class="doc-selection-header">
                             <span class="doc-selection-title">Select Vault Records</span>
-                            <span id="sim-selected-count" class="doc-count-badge">2 selected (3.5 MB)</span>
+                            <span id="sim-selected-count" class="doc-count-badge font-mono-data">2 selected (3.5 MB)</span>
                         </div>
 
                         <div class="doc-list">
@@ -107,7 +111,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <span class="doc-hash-tag">sha256:4a8e...91b0</span>
+                                <span class="doc-hash-tag font-mono-data">sha256:4a8e...91b0</span>
                             </label>
 
                             <!-- Document Item 2 -->
@@ -124,7 +128,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <span class="doc-hash-tag">sha256:7c22...88aa</span>
+                                <span class="doc-hash-tag font-mono-data">sha256:7c22...88aa</span>
                             </label>
 
                             <!-- Document Item 3 -->
@@ -141,7 +145,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <span class="doc-hash-tag">sha256:d130...ef49</span>
+                                <span class="doc-hash-tag font-mono-data">sha256:d130...ef49</span>
                             </label>
                         </div>
                     </div>
@@ -149,7 +153,7 @@
                     <!-- Expiration Selector -->
                     <div class="expiry-control-group">
                         <span class="doc-selection-title" style="display: block; margin-bottom: 0.4rem;">Cryptographic Expiration Timer</span>
-                        <div class="expiry-buttons-grid">
+                        <div class="expiry-buttons-grid font-mono-data">
                             <button type="button" class="expiry-btn" data-val="15 mins">15 mins</button>
                             <button type="button" class="expiry-btn active" data-val="30 mins">30 mins</button>
                             <button type="button" class="expiry-btn" data-val="2 hours">2 hours</button>
@@ -238,8 +242,8 @@
                                 <rect fill="#0b1c30" height="5" width="5" x="125" y="105"></rect>
                             </svg>
                         </div>
-                        <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-primary);">Scan with mobile or secure reader</div>
-                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.1rem;">Zero payload loaded automatically</div>
+                        <div style="font-size: 0.75rem; font-weight: 600; color: var(--text-primary);">Scan with mobile or reader</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.1rem;">Zero payload stored without pass key</div>
                     </div>
 
                     <!-- Temporary Share Key Card -->
@@ -285,13 +289,12 @@
     </div>
 </section>
 
-<!-- Authentic Real-World Use Cases (Featuring High-Quality Photography) -->
-<section class="section" id="vault-showcase">
+<!-- Real-World Use Cases (Featuring Authentic Unsplash Photography) -->
+<section class="section" id="use-cases">
     <div class="container">
         <div class="section-header">
-            <div class="section-tag font-mono-data">Real-World Utility</div>
             <h2 class="section-title">Built for the moments when privacy matters most</h2>
-            <p class="section-subtitle">Common scenarios where unencrypted email attachments or full drive shares create unnecessary security risks.</p>
+            <p class="section-subtitle">Real-world scenarios where email attachments or full drive shares create permanent security exposures.</p>
         </div>
 
         <div class="scenarios-grid">
@@ -352,11 +355,10 @@
     </div>
 </section>
 
-<!-- Native Clean Sharing Protocol Workflow -->
+<!-- Sharing Protocol Workflow -->
 <section class="section section-subtle" id="how-it-works">
     <div class="container">
         <div class="section-header">
-            <div class="section-tag font-mono-data">Sharing Protocol</div>
             <h2 class="section-title">How Controlled Sharing Operates</h2>
             <p class="section-subtitle">A straightforward three-stage architecture keeping you in complete ownership.</p>
         </div>
@@ -367,7 +369,7 @@
                 <div style="font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700; color: var(--brand-navy); margin-bottom: 0.5rem;">STEP 01</div>
                 <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--brand-navy); margin-bottom: 0.4rem;">Select & Generate</h3>
                 <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.55;">
-                    Choose the specific files you want to present from your vault, choose expiration (10m - 24h), and generate a Share Pass with a QR code and random Share Key.
+                    Choose the specific files you want to present from your vault, set expiration (10m - 24h), and generate a Share Pass with a QR code and random Share Key.
                 </p>
             </div>
 
@@ -392,11 +394,10 @@
     </div>
 </section>
 
-<!-- Defensive Capabilities Bento Grid -->
+<!-- Defensive Capabilities Grid -->
 <section class="section" id="features">
     <div class="container">
         <div style="max-width: 600px; margin-bottom: 2.5rem;">
-            <div class="section-tag font-mono-data">Defensive Capabilities</div>
             <h2 class="section-title" data-testid="features-title">Engineered for absolute document sovereignty</h2>
             <p class="section-subtitle">Traditional file shares give away account access and permanent links. Passli enforces localized zero-trust boundaries.</p>
         </div>
@@ -461,7 +462,6 @@
 <section class="section section-subtle" id="security">
     <div class="container">
         <div class="section-header">
-            <div class="section-tag font-mono-data">Architectural Assessment</div>
             <h2 class="section-title">Institutional Security Comparison</h2>
             <p class="section-subtitle">See how Passli’s cryptographic pass structure compares to legacy cloud links and unencrypted email attachments.</p>
         </div>
@@ -517,11 +517,10 @@
     </div>
 </section>
 
-<!-- Pre-Footer CTA -->
-<section style="padding: 4rem 0; background-color: var(--bg-surface); text-align: center;">
+<!-- Bottom CTA -->
+<section style="padding: 4.5rem 0; background-color: var(--bg-surface); text-align: center; border-top: 1px solid var(--border-light);">
     <div class="container">
-        <span class="section-tag font-mono-data">DEFENSE-GRADE PRIVACY</span>
-        <h2 class="section-title" style="margin-top: 0.35rem;">Ready to secure your personal records perimeter?</h2>
+        <h2 class="section-title">Ready to secure your personal records perimeter?</h2>
         <p class="section-subtitle" style="max-width: 550px; margin: 0.5rem auto 1.5rem;">Launch your vault immediately. Share sensitive files with complete confidence and total control.</p>
         <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
             <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
