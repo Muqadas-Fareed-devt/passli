@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Passli — Secure Document Sharing Platform{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Secure personal document vault with QR and key-controlled document sharing.{% endblock %}">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Passli Styles -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav-wrapper">
+                <a href="{% url 'landing' %}" class="brand-logo" data-testid="nav-brand" id="brand-link">
+                    <span class="brand-icon">🛡️</span>
+                    <span>Passli</span>
+                </a>
+                
+                <ul class="nav-links">
+                    <li><a href="{% url 'landing' %}" class="nav-link" data-testid="nav-home">Home</a></li>
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'dashboard' %}" class="nav-link" data-testid="nav-dashboard">Dashboard</a></li>
+                        <li><a href="{% url 'documents_list' %}" class="nav-link" data-testid="nav-documents">Vault</a></li>
+                        <li><a href="{% url 'share_create' %}" class="btn btn-sm btn-primary" data-testid="nav-create-pass">+ Share Pass</a></li>
+                        <li>
+                            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-secondary" data-testid="nav-logout">Logout</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li><a href="{% url 'login' %}" class="btn btn-sm btn-secondary" data-testid="nav-login">Log In</a></li>
+                        <li><a href="{% url 'register' %}" class="btn btn-sm btn-primary" data-testid="nav-register">Get Started</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Global Alert Messages -->
+    <div class="container">
+        {% if messages %}
+            <div class="messages-container" data-testid="messages-container">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'info' }}" data-testid="alert-{{ message.tags|default:'info' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    🛡️ Passli
+                    <p style="font-size: 0.825rem; font-weight: normal; color: #94a3b8; margin-top: 0.25rem;">
+                        Secure personal document vault & controlled sharing
+                    </p>
+                </div>
+                <ul class="footer-links">
+                    <li><a href="{% url 'landing' %}">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#security">Security</a></li>
+                </ul>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Passli Platform. Built with security and privacy first.</p>
+            </div>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

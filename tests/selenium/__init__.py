@@ -1,0 +1,1 @@
+# Selenium automated tests package
