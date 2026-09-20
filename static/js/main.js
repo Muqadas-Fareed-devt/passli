@@ -1,5 +1,5 @@
 /**
- * Passli — Interactive UI Engine
+ * Passli — Clean Human-Crafted Interactive Elements
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,33 +9,28 @@ document.addEventListener('DOMContentLoaded', () => {
 function initSharePassSimulator() {
     const docCheckboxes = document.querySelectorAll('.sim-doc-checkbox');
     const expirySelect = document.getElementById('sim-expiry-select');
-    const viewPerm = document.getElementById('sim-perm-view');
-    const downloadPerm = document.getElementById('sim-perm-download');
     const generateBtn = document.getElementById('sim-generate-btn');
     const keyDisplay = document.getElementById('sim-key-text');
     const expiryBadge = document.getElementById('sim-expiry-text');
-    const docCountBadge = document.getElementById('sim-selected-count');
-    const qrContainer = document.getElementById('sim-qr-preview');
 
     if (!generateBtn) return;
 
-    function updateSelectedCount() {
-        let count = 0;
-        docCheckboxes.forEach(cb => {
-            if (cb.checked) count++;
-        });
-        if (docCountBadge) {
-            docCountBadge.textContent = `${count} Selected`;
-        }
-    }
-
     docCheckboxes.forEach(cb => {
-        cb.addEventListener('change', updateSelectedCount);
+        cb.addEventListener('change', (e) => {
+            const row = e.target.closest('.mockup-doc-row');
+            if (row) {
+                if (e.target.checked) {
+                    row.classList.add('active');
+                } else {
+                    row.classList.remove('active');
+                }
+            }
+        });
     });
 
     generateBtn.addEventListener('click', () => {
-        // Generate random key formatted like: 8K7P-42XM
-        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+        // Generate random 8-character key
+        const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
         let key = '';
         for (let i = 0; i < 8; i++) {
             if (i === 4) key += '-';
@@ -50,14 +45,13 @@ function initSharePassSimulator() {
             expiryBadge.textContent = expirySelect.options[expirySelect.selectedIndex].text;
         }
 
-        // Animate button feedback
-        const originalText = generateBtn.innerHTML;
-        generateBtn.innerHTML = '<span>⚡ Generated!</span>';
-        generateBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-        
+        const originalText = generateBtn.textContent;
+        generateBtn.textContent = 'Pass Generated';
+        generateBtn.disabled = true;
+
         setTimeout(() => {
-            generateBtn.innerHTML = originalText;
-            generateBtn.style.background = '';
-        }, 1500);
+            generateBtn.textContent = originalText;
+            generateBtn.disabled = false;
+        }, 1200);
     });
 }

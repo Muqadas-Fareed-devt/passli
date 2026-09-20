@@ -4,28 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Passli — Secure Personal Document Vault & Controlled Sharing{% endblock %}</title>
-    <meta name="description" content="{% block meta_description %}Passli is a next-generation personal document vault. Share specific documents via QR-based Share Passes protected by temporary access keys.{% endblock %}">
+    <title>{% block title %}Passli — Controlled Document Vault & Sharing{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Store personal documents securely and share specific files via QR and temporary access keys without giving away full account access.{% endblock %}">
     
-    <!-- Google Fonts -->
+    <!-- Typography: Inter + JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     
     <!-- Passli Styles -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Top Navigation Header -->
+    <!-- Top App Navigation -->
     <header class="header">
         <div class="container">
             <nav class="nav-wrapper">
                 <a href="{% url 'landing' %}" class="brand-logo" data-testid="nav-brand" id="brand-link">
-                    <div class="brand-icon-box">
+                    <div class="brand-icon">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                            <path d="M9 12l2 2 4-4"/>
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                         </svg>
                     </div>
                     <span>Passli</span>
@@ -34,11 +34,12 @@
                 <ul class="nav-links">
                     <li><a href="{% url 'landing' %}" class="nav-link" data-testid="nav-home">Home</a></li>
                     <li><a href="#features" class="nav-link">Features</a></li>
-                    <li><a href="#security" class="nav-link">Security Architecture</a></li>
+                    <li><a href="#how-it-works" class="nav-link">How it Works</a></li>
+                    <li><a href="#security" class="nav-link">Security Specs</a></li>
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'dashboard' %}" class="nav-link" data-testid="nav-dashboard">Dashboard</a></li>
                         <li><a href="{% url 'documents_list' %}" class="nav-link" data-testid="nav-documents">Vault</a></li>
-                        <li><a href="{% url 'share_create' %}" class="btn btn-sm btn-primary btn-glow" data-testid="nav-create-pass">+ New Share Pass</a></li>
+                        <li><a href="{% url 'share_create' %}" class="btn btn-sm btn-primary" data-testid="nav-create-pass">+ New Share Pass</a></li>
                         <li>
                             <form action="{% url 'logout' %}" method="post" style="display: inline;">
                                 {% csrf_token %}
@@ -46,83 +47,67 @@
                             </form>
                         </li>
                     {% else %}
-                        <li><a href="{% url 'login' %}" class="btn btn-sm btn-secondary" data-testid="nav-login">Sign In</a></li>
-                        <li><a href="{% url 'register' %}" class="btn btn-sm btn-primary btn-glow" data-testid="nav-register">Create Free Vault</a></li>
+                        <li><a href="{% url 'login' %}" class="btn btn-sm btn-secondary" data-testid="nav-login">Sign in</a></li>
+                        <li><a href="{% url 'register' %}" class="btn btn-sm btn-primary" data-testid="nav-register">Create Account</a></li>
                     {% endif %}
                 </ul>
             </nav>
         </div>
     </header>
 
-    <!-- Global Alert Notifications -->
+    <!-- Global Flash Messages -->
     <div class="container">
         {% if messages %}
-            <div class="messages-container" data-testid="messages-container">
+            <div class="messages-container" data-testid="messages-container" style="margin-top: 1rem;">
                 {% for message in messages %}
-                    <div class="alert alert-{{ message.tags|default:'info' }}" data-testid="alert-{{ message.tags|default:'info' }}">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                        </svg>
-                        <span>{{ message }}</span>
+                    <div class="alert alert-{{ message.tags|default:'info' }}" data-testid="alert-{{ message.tags|default:'info' }}" style="padding: 0.75rem 1rem; border-radius: 6px; font-size: 0.875rem; margin-bottom: 0.5rem; background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe;">
+                        {{ message }}
                     </div>
                 {% endfor %}
             </div>
         {% endif %}
     </div>
 
-    <!-- Main Content Area -->
+    <!-- Main View Content -->
     <main class="main-content">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
+    <!-- App Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-top">
-                <div class="footer-brand">
-                    <div class="footer-brand-logo">
-                        <div class="brand-icon-box" style="width: 2rem; height: 2rem;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <div>
+                    <div class="brand-logo" style="font-size: 1.1rem;">
+                        <div class="brand-icon" style="width: 1.6rem; height: 1.6rem;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width: 0.95rem; height: 0.95rem;">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                             </svg>
                         </div>
                         <span>Passli</span>
                     </div>
-                    <p class="footer-tagline">
-                        Enterprise-grade personal document security. Controlled, temporary document sharing with zero full-account exposure.
+                    <p class="footer-brand-desc">
+                        Personal document vault with controlled, single-purpose sharing. Built for privacy, speed, and defense in depth.
                     </p>
                 </div>
-                <div class="footer-links-group">
-                    <div>
-                        <div class="footer-col-title">Platform</div>
-                        <ul class="footer-nav-list">
-                            <li><a href="{% url 'landing' %}">Home</a></li>
-                            <li><a href="#features">Vault Features</a></li>
-                            <li><a href="#how-it-works">How It Works</a></li>
-                            <li><a href="#security">Security Specs</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <div class="footer-col-title">Security & Trust</div>
-                        <ul class="footer-nav-list">
-                            <li><a href="#security">Cryptographic Tokens</a></li>
-                            <li><a href="#security">Server-Side Expiration</a></li>
-                            <li><a href="#security">Brute-Force Shield</a></li>
-                            <li><a href="#security">Instant Revocation</a></li>
-                        </ul>
-                    </div>
+                <div>
+                    <ul class="footer-nav">
+                        <li><a href="{% url 'landing' %}">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#security">Security Specs</a></li>
+                    </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2026 Passli Document Security Platform. Built for privacy, trust, and speed.</p>
-                <p style="color: #64748b;">OWASP Compliant &bull; End-to-End Key Hashed</p>
+                <div>&copy; 2026 Passli. All rights reserved.</div>
+                <div>Server-enforced access &bull; Zero plaintext keys</div>
             </div>
         </div>
     </footer>
 
-    <!-- Interactive Scripts -->
+    <!-- Interactive Script -->
     <script src="{% static 'js/main.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
