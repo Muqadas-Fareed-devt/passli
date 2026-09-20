@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In — Passli Personal Vault{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="auth-card" data-testid="login-card">
+        <div class="auth-header">
+            <div class="auth-icon-box">
+                <span class="material-symbols-outlined" style="font-size: 24px;">lock</span>
+            </div>
+            <h1 class="auth-title">Access Personal Vault</h1>
+            <p class="auth-subtitle">Enter your credentials to unlock client-encrypted records</p>
+        </div>
+
+        {% if form.errors %}
+            <div class="alert alert-danger" data-testid="auth-error-box">
+                <span class="material-symbols-outlined" style="font-size: 18px;">error</span>
+                <span>Invalid username or password. Please try again.</span>
+            </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'login' %}" class="auth-form" novalidate>
+            {% csrf_token %}
+            {% if request.GET.next %}
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
+            {% endif %}
+
+            <div class="form-group">
+                <label for="login-username" class="form-label">Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <span class="form-error">{{ form.username.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                    <label for="login-password" class="form-label" style="margin-bottom: 0;">Password</label>
+                </div>
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <span class="form-error">{{ form.password.errors.0 }}</span>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block btn-lg" data-testid="login-submit-btn" style="margin-top: 1rem;">
+                <span class="material-symbols-outlined" style="font-size: 18px;">key</span> Sign In
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <span>Don't have a vault yet?</span>
+            <a href="{% url 'register' %}" class="auth-link font-mono-data">Create Personal Vault</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

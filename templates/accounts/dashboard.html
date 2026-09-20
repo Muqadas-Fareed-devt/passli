@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Personal Vault Dashboard — Passli{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="container">
+        <!-- Dashboard Top Header -->
+        <div class="dashboard-header" data-testid="dashboard-header">
+            <div>
+                <div class="dashboard-user-greeting">
+                    <span class="user-avatar-badge font-mono-data">{{ request.user.username|make_list|first|upper }}</span>
+                    <div>
+                        <h1 class="dashboard-title">Personal Vault Dashboard</h1>
+                        <p class="dashboard-subtitle">Active security envelope for <strong>{{ request.user.email|default:request.user.username }}</strong></p>
+                    </div>
+                </div>
+            </div>
+            <div class="dashboard-actions">
+                <a href="{% url 'documents_upload' %}" class="btn btn-secondary" data-testid="dash-upload-btn">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">upload_file</span> Upload Record
+                </a>
+                <a href="{% url 'share_create' %}" class="btn btn-primary" data-testid="dash-new-pass-btn">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">add_link</span> Create Share Pass
+                </a>
+            </div>
+        </div>
+
+        <!-- Security Status Bar -->
+        <div class="vault-status-bar" data-testid="vault-status-bar">
+            <div class="vault-status-item">
+                <span class="pulse-dot"></span>
+                <span class="font-mono-data">Zero-Knowledge Envelope: <strong>ACTIVE</strong></span>
+            </div>
+            <div class="vault-status-item">
+                <span class="material-symbols-outlined" style="font-size: 16px; color: var(--brand-emerald);">verified</span>
+                <span>Argon2id + AES-256-GCM Hashed Keys</span>
+            </div>
+            <div class="vault-status-item">
+                <span class="material-symbols-outlined" style="font-size: 16px; color: var(--brand-blue);">timer</span>
+                <span>Server TTL Guard Active</span>
+            </div>
+        </div>
+
+        <!-- Metrics Stats Grid -->
+        <div class="stats-grid" data-testid="stats-grid">
+            <!-- Metric 1: Total Documents -->
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <span class="stat-card-label font-mono-data">VAULT RECORDS</span>
+                    <div class="stat-icon-badge">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">folder_open</span>
+                    </div>
+                </div>
+                <div class="stat-card-value">{{ total_documents }}</div>
+                <div class="stat-card-footer">
+                    <span>Encrypted personal documents</span>
+                </div>
+            </div>
+
+            <!-- Metric 2: Active Passes -->
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <span class="stat-card-label font-mono-data">ACTIVE PASSES</span>
+                    <div class="stat-icon-badge" style="background: var(--bg-emerald-light); color: var(--brand-emerald);">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">qr_code_2</span>
+                    </div>
+                </div>
+                <div class="stat-card-value" style="color: var(--brand-emerald);">{{ active_passes }}</div>
+                <div class="stat-card-footer">
+                    <span>Live time-gated access envelopes</span>
+                </div>
+            </div>
+
+            <!-- Metric 3: Total Shares -->
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <span class="stat-card-label font-mono-data">TOTAL PASSES</span>
+                    <div class="stat-icon-badge">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">history</span>
+                    </div>
+                </div>
+                <div class="stat-card-value">{{ total_passes }}</div>
+                <div class="stat-card-footer">
+                    <span>Lifetime share passes generated</span>
+                </div>
+            </div>
+
+            <!-- Metric 4: Storage Usage -->
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <span class="stat-card-label font-mono-data">STORAGE QUOTA</span>
+                    <div class="stat-icon-badge">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">cloud_done</span>
+                    </div>
+                </div>
+                <div class="stat-card-value">{{ storage_used_mb }} <span style="font-size: 1rem; color: var(--text-muted); font-weight: 400;">/ {{ storage_quota_mb }} MB</span></div>
+                <div class="stat-card-footer">
+                    <div class="storage-bar-track">
+                        <div class="storage-bar-fill" style="width: {{ storage_pct }}%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Bento Sections -->
+        <div class="dashboard-bento-grid">
+            <!-- Left: Active Passes & Quick Management -->
+            <div class="bento-panel">
+                <div class="bento-panel-header">
+                    <div>
+                        <h2 class="bento-panel-title">Active Share Passes</h2>
+                        <p class="bento-panel-subtitle">Temporary cryptographic access tokens currently live</p>
+                    </div>
+                    <a href="{% url 'share_create' %}" class="btn btn-sm btn-primary">
+                        <span class="material-symbols-outlined" style="font-size: 15px;">add</span> New Pass
+                    </a>
+                </div>
+
+                {% if recent_passes %}
+                    <!-- Passes list rendered when available in Phase 4 -->
+                {% else %}
+                    <div class="empty-state-box" data-testid="empty-passes-state">
+                        <div class="empty-state-icon">
+                            <span class="material-symbols-outlined" style="font-size: 32px;">share</span>
+                        </div>
+                        <h3 class="empty-state-title">No Active Share Passes</h3>
+                        <p class="empty-state-text">You haven't generated any time-gated share passes yet. When you create one, its live status and countdown will appear here.</p>
+                        <a href="{% url 'share_create' %}" class="btn btn-secondary btn-sm" style="margin-top: 0.75rem;">
+                            <span class="material-symbols-outlined" style="font-size: 16px;">lock_clock</span> Create First Share Pass
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Right: Vault Records & Quick Categories -->
+            <div class="bento-panel">
+                <div class="bento-panel-header">
+                    <div>
+                        <h2 class="bento-panel-title">Personal Document Vault</h2>
+                        <p class="bento-panel-subtitle">Client-encrypted records categorized by security domain</p>
+                    </div>
+                    <a href="{% url 'documents_upload' %}" class="btn btn-sm btn-secondary">
+                        <span class="material-symbols-outlined" style="font-size: 15px;">upload</span> Upload
+                    </a>
+                </div>
+
+                {% if recent_documents %}
+                    <!-- Document list rendered when available in Phase 3 -->
+                {% else %}
+                    <div class="empty-state-box" data-testid="empty-docs-state">
+                        <div class="empty-state-icon">
+                            <span class="material-symbols-outlined" style="font-size: 32px;">shield_person</span>
+                        </div>
+                        <h3 class="empty-state-title">Your Vault is Empty</h3>
+                        <p class="empty-state-text">Add your medical panels, ID cards, education diplomas, or vehicle certificates to your encrypted vault to begin creating controlled share passes.</p>
+                        <a href="{% url 'documents_upload' %}" class="btn btn-secondary btn-sm" style="margin-top: 0.75rem;">
+                            <span class="material-symbols-outlined" style="font-size: 16px;">add</span> Add First Document
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Workflow Guide -->
+        <div class="dashboard-guide-card">
+            <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem;">How to Share Safely with Passli</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
+                <div>
+                    <strong>1. Upload to Vault:</strong> Store PDF, PNG, or JPG files with client-side envelope encryption.
+                </div>
+                <div>
+                    <strong>2. Select & Set TTL:</strong> Select specific files and choose pass lifetime (15 mins to 24 hours).
+                </div>
+                <div>
+                    <strong>3. Share Key & QR:</strong> Recipient opens pass portal with QR and enters temporary 8-character key.
+                </div>
+                <div>
+                    <strong>4. 1-Click Revocation:</strong> Revoke access anytime or let it auto-shred on expiration.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
