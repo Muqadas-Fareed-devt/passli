@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%">
+  <defs>
+    <linearGradient id="fav-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d1424"/>
+      <stop offset="100%" stop-color="#04060c"/>
+    </linearGradient>
+    <linearGradient id="fav-border" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="50%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+    <linearGradient id="fav-indigo" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#4338ca"/>
+    </linearGradient>
+    <linearGradient id="fav-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0891b2"/>
+    </linearGradient>
+    <linearGradient id="fav-emerald" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+
+  <!-- High-contrast backdrop container for crisp visibility on light/dark OS tabs -->
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="url(#fav-bg)" stroke="url(#fav-border)" stroke-width="1.8"/>
+
+  <!-- Left Facet -->
+  <path d="M 32 10
+           C 23 13, 15 16, 13 22
+           C 11 34, 16 48, 32 54
+           L 32 37
+           C 26 37, 21 32, 21 27
+           C 21 21, 26 17, 32 17 Z" 
+        fill="url(#fav-indigo)"/>
+
+  <!-- Right Facet -->
+  <path d="M 32 10
+           C 41 13, 49 16, 51 22
+           C 53 34, 48 48, 32 54
+           L 32 37
+           C 38 37, 43 32, 43 27
+           C 43 21, 38 17, 32 17 Z" 
+        fill="url(#fav-cyan)"/>
+
+  <!-- Shackle -->
+  <path d="M 25 22 V 17 C 25 13.1 28.1 10 32 10 C 35.9 10 39 13.1 39 17 V 22" 
+        fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- Center Quantum Vault Node -->
+  <circle cx="32" cy="27" r="6.5" fill="#04060c" stroke="#ffffff" stroke-width="1.8"/>
+  <path d="M 30.2 27 L 33.8 27 L 35 36 L 29 36 Z" fill="#ffffff"/>
+  <circle cx="32" cy="27" r="2.8" fill="url(#fav-emerald)"/>
+</svg>

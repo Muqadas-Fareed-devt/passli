@@ -7,6 +7,26 @@
     <title>{% block title %}Passli — Controlled Document Vault & Secure Sharing{% endblock %}</title>
     <meta name="description" content="{% block meta_description %}Passli lets you create time-gated, cryptographic Share Passes for sensitive records without handing over master credentials or cloud passwords.{% endblock %}">
     
+    <!-- Favicons & App Icons -->
+    <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon/favicon.svg' %}">
+    <link rel="icon" type="image/png" sizes="48x48" href="{% static 'img/favicon/favicon-48x48.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon/favicon-16x16.png' %}">
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicon/apple-touch-icon.png' %}">
+    <link rel="manifest" href="{% static 'site.webmanifest' %}">
+    <meta name="theme-color" content="#090d16">
+
+    <!-- Open Graph & Social Card Meta -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Passli — Controlled Document Vault & Secure Sharing">
+    <meta property="og:description" content="Create time-gated, cryptographic Share Passes for sensitive records without handing over master credentials.">
+    <meta property="og:image" content="{% static 'img/brand/passli-og-banner.png' %}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Passli — Controlled Document Vault & Secure Sharing">
+    <meta name="twitter:description" content="Create time-gated, cryptographic Share Passes for sensitive records without handing over master credentials.">
+    <meta name="twitter:image" content="{% static 'img/brand/passli-og-banner.png' %}">
+    
     <!-- Google Fonts & Material Symbols -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,10 +45,8 @@
                 <!-- Brand Logo Anchor -->
                 <div class="nav-left">
                     <a href="{% url 'landing' %}" class="brand-logo" data-testid="nav-brand" id="brand-link">
-                        <div class="brand-icon-box">
-                            <span class="material-symbols-outlined" style="font-size: 18px;">lock</span>
-                        </div>
-                        <span>Passli</span>
+                        <img src="{% static 'img/brand/passli-mark.svg' %}" alt="Passli Shield Mark" class="brand-mark-img" width="31" height="31">
+                        <span class="brand-text">Passli</span>
                         <span class="brand-dot"></span>
                     </a>
                 </div>
@@ -114,10 +132,8 @@
             <div class="footer-inner">
                 <div>
                     <div class="brand-logo" style="font-size: 1.1rem;">
-                        <div class="brand-icon-box" style="width: 1.6rem; height: 1.6rem;">
-                            <span class="material-symbols-outlined" style="font-size: 14px;">lock</span>
-                        </div>
-                        <span>Passli</span>
+                        <img src="{% static 'img/brand/passli-mark.svg' %}" alt="Passli Shield Mark" class="brand-mark-img" width="24" height="24" style="width: 1.5rem; height: 1.5rem;">
+                        <span class="brand-text">Passli</span>
                     </div>
                     <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
                         &copy; 2026 Passli Cryptographic Systems. SOC 2 Type II Certified. Zero-Knowledge Audited.
