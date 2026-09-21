@@ -1,6 +1,6 @@
 # Passli Development Progress & Roadmap
 
-> **Current Milestone**: Phase 3 Completed & Verified (39/39 Automated Unit Tests Passing)  
+> **Current Milestone**: Phases 1-3 & Security Audit Suite Completed & Verified (49/49 Automated Tests Passing)  
 > **Repository**: [github.com/Ali-Nawaz-devt/passli](https://github.com/Ali-Nawaz-devt/passli)  
 > **Status**: Active Development
 
@@ -13,6 +13,7 @@
 | **Phase 1** | Project Setup, Anti-Slop Design System, Split-Hero & Landing Page | :white_check_mark: Completed | 100% (11/11 Tests) |
 | **Phase 2** | User Authentication, Registration & Personal Vault Dashboard | :white_check_mark: Completed | 100% (11/11 Tests) |
 | **Phase 3** | Encrypted Document Vault Management & Categorization | :white_check_mark: Completed | 100% (17/17 Tests) |
+| **Security Audit** | OWASP Top 10, IDOR Prevention, Upload Defense & Checksum Integrity | :white_check_mark: Completed | 100% (10/10 Tests) |
 | **Phase 4** | Controlled Share Pass Generation & Ephemeral QR Protocol | :hourglass_flowing_sand: Up Next | Planned |
 | **Phase 5** | Recipient Verification Portal & Two-Factor Access Flow | :calendar: Scheduled | Planned |
 | **Phase 6** | Audit Trail, Immediate Revocation & Rate Limiting | :calendar: Scheduled | Planned |
@@ -62,6 +63,18 @@
 
 ---
 
+### ✅ Security & Vulnerability Defense Suite
+- [x] **IDOR Attack Prevention**: Complete test verification that Bob cannot view, download, edit, or delete Alice's documents (HTTP 404 enforcement).
+- [x] **Unauthenticated Access Redirection**: All protected routes (`/dashboard/`, `/documents/`, `/documents/upload/`, `/documents/<id>/`, `/documents/<id>/download/`, `/documents/<id>/edit/`, `/documents/<id>/delete/`) redirect to login.
+- [x] **Malicious File Upload Defense**: Instant rejection of executable scripts (`.exe, .bat, .sh, .py, .php, .html, .js`).
+- [x] **File Size Constraint Defense**: Client & form level enforcement rejecting payloads > 25 MB.
+- [x] **Path Traversal Sanitization**: Multi-level path traversal payloads (`../../../../etc/shadow.pdf`) sanitized to isolated UUID filenames in user partition.
+- [x] **Cryptographic Integrity Checksum**: SHA-256 binary validation on every saved file.
+- [x] **Session Destruction Verification**: POST logout destroys session cookies and revokes protected route access.
+- [x] 10 automated security tests created and verified in `tests/unit/test_security.py`.
+
+---
+
 ### ⏳ Phase 4: Controlled Share Pass Generation & Ephemeral QR Protocol
 - [ ] `SharePass` model with many-to-many document relationships.
 - [ ] Ephemeral key generation (crypto-random 8-character token) and PBKDF2/Argon2 hashing.
@@ -99,8 +112,8 @@
 ## 🛠️ Automated Verification Log
 
 ```text
-Test Suite: tests/unit/test_phase1.py, test_phase2.py, test_phase3.py
-Status: 39 Passed, 0 Failed, 0 Skipped
-Ran: 39 tests in 110.891s
+Test Suite: tests/unit/test_phase1.py, test_phase2.py, test_phase3.py, test_security.py
+Status: 49 Passed, 0 Failed, 0 Skipped
+Ran: 49 tests in 211.420s
 Result: OK
 ```
