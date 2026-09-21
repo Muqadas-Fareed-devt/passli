@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit Record: {{ document.title }} — Passli Vault{% endblock %}
+
+{% block content %}
+<div class="vault-container">
+    <div class="container" style="max-width: 600px;">
+        <div style="margin-bottom: 1.5rem;">
+            <a href="{% url 'document_detail' document.pk %}" class="auth-link font-mono-data" style="font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.3rem;">
+                <span class="material-symbols-outlined" style="font-size: 15px;">arrow_back</span> Back to Record Inspector
+            </a>
+        </div>
+
+        <div class="auth-card" style="max-width: 100%;" data-testid="edit-card">
+            <div class="auth-header" style="text-align: left; margin-bottom: 1.5rem;">
+                <h1 class="auth-title">Edit Record Metadata</h1>
+                <p class="auth-subtitle">Update record title, category domain, or notes</p>
+            </div>
+
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    <span>Please correct the errors below.</span>
+                </div>
+            {% endif %}
+
+            <form method="post" class="auth-form" novalidate>
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="edit-doc-title" class="form-label">Record Title <span style="color: #e11d48;">*</span></label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <span class="form-error">{{ form.title.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-doc-category" class="form-label">Category Domain <span style="color: #e11d48;">*</span></label>
+                    {{ form.category }}
+                    {% if form.category.errors %}
+                        <span class="form-error">{{ form.category.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-doc-description" class="form-label">Description / Notes</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <span class="form-error">{{ form.description.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-light);">
+                    <a href="{% url 'document_detail' document.pk %}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary" data-testid="edit-submit-btn">
+                        <span class="material-symbols-outlined" style="font-size: 16px;">save</span> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

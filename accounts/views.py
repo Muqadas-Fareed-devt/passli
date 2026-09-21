@@ -4,7 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
 from django.urls import reverse_lazy
+from django.db.models import Sum
 from .forms import RegisterForm, LoginForm
+from documents.models import Document
 
 
 def landing_view(request):
@@ -60,22 +62,30 @@ def dashboard_view(request):
     Authenticated user personal vault dashboard.
     Displays vault statistics, active share passes, storage usage, and quick actions.
     """
-    # Context data for documents and sharing apps (will be dynamically connected in Phase 3/4)
-    total_docs = getattr(request.user, 'documents', None)
-    total_docs_count = total_docs.count() if total_docs is not None else 0
+    user_docs = Document.objects.filter(user=request.user)
+    total_docs_count = user_docs.count()
     
+    # Calculate storage
+    total_bytes = user_docs.aggregate(total=Sum('file_size'))['total'] or 0
+    storage_used_mb = total_bytes / (1024 * 1024)
+    storage_quota_mb = 500.0  # 500 MB default vault quota
+    storage_pct = min(100, int((storage_used_mb / storage_quota_mb) * 100)) if storage_quota_mb > 0 else 0
+
+    # Share passes calculation (Phase 4 integration)
     total_passes = getattr(request.user, 'share_passes', None)
     total_passes_count = total_passes.count() if total_passes is not None else 0
     active_passes_count = total_passes.filter(is_revoked=False).count() if total_passes is not None else 0
+
+    recent_documents = user_docs.order_by('-created_at')[:4]
 
     context = {
         'total_documents': total_docs_count,
         'total_passes': total_passes_count,
         'active_passes': active_passes_count,
-        'storage_used_mb': "0.0",
-        'storage_quota_mb': "500.0",
-        'storage_pct': 0,
-        'recent_documents': [],
+        'storage_used_mb': f"{storage_used_mb:.1f}",
+        'storage_quota_mb': f"{storage_quota_mb:.0f}",
+        'storage_pct': storage_pct,
+        'recent_documents': recent_documents,
         'recent_passes': [],
     }
     return render(request, 'accounts/dashboard.html', context)

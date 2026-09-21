@@ -1,6 +1,6 @@
 # Passli Development Progress & Roadmap
 
-> **Current Milestone**: Phase 2 Completed & Verified (22/22 Automated Unit Tests Passing)  
+> **Current Milestone**: Phase 3 Completed & Verified (39/39 Automated Unit Tests Passing)  
 > **Repository**: [github.com/Ali-Nawaz-devt/passli](https://github.com/Ali-Nawaz-devt/passli)  
 > **Status**: Active Development
 
@@ -12,8 +12,8 @@
 | :--- | :--- | :---: | :---: |
 | **Phase 1** | Project Setup, Anti-Slop Design System, Split-Hero & Landing Page | :white_check_mark: Completed | 100% (11/11 Tests) |
 | **Phase 2** | User Authentication, Registration & Personal Vault Dashboard | :white_check_mark: Completed | 100% (11/11 Tests) |
-| **Phase 3** | Encrypted Document Vault Management & Categorization | :hourglass_flowing_sand: Up Next | Planned |
-| **Phase 4** | Controlled Share Pass Generation & Ephemeral QR Protocol | :calendar: Scheduled | Planned |
+| **Phase 3** | Encrypted Document Vault Management & Categorization | :white_check_mark: Completed | 100% (17/17 Tests) |
+| **Phase 4** | Controlled Share Pass Generation & Ephemeral QR Protocol | :hourglass_flowing_sand: Up Next | Planned |
 | **Phase 5** | Recipient Verification Portal & Two-Factor Access Flow | :calendar: Scheduled | Planned |
 | **Phase 6** | Audit Trail, Immediate Revocation & Rate Limiting | :calendar: Scheduled | Planned |
 | **Phase 7** | End-to-End Selenium Test Suite, CI Automation & Production Polish | :calendar: Scheduled | Planned |
@@ -48,16 +48,21 @@
 
 ---
 
-### ⏳ Phase 3: Document Vault Management & Categorization
-- [ ] Document model with encrypted file storage handlers.
-- [ ] Category taxonomy: Medical, Education, Vehicle, Personal, Professional, Other.
-- [ ] Multi-file upload with MIME validation and file size restrictions (25 MB cap).
-- [ ] In-browser document metadata viewer and delete/archive actions.
-- [ ] Unit tests for upload validation, ownership checks, and IDOR prevention.
+### ✅ Phase 3: Document Vault Management & Categorization
+- [x] `Document` model with user-isolated storage paths (`vault_files/user_<id>/<uuid>.<ext>`).
+- [x] Automatic SHA-256 cryptographic checksum calculation and MIME verification on save.
+- [x] Domain taxonomy: Medical Records, Education & Degrees, Vehicle & Asset, Personal & Identity, Professional, Other.
+- [x] `DocumentUploadForm` and `DocumentEditForm` with 25 MB size constraint and extension whitelisting.
+- [x] Safe in-browser decrypted preview for PDF documents and high-resolution images.
+- [x] Secure download streaming with sanitized `Content-Disposition` attachment headers.
+- [x] Robust IDOR security guards on view, preview, download, edit, and delete operations.
+- [x] Automatic physical disk sanitization on document deletion.
+- [x] Real-time dashboard integration showing actual document counts, storage used (MB), and recent vault records.
+- [x] 17 automated unit tests created and verified in `tests/unit/test_phase3.py`.
 
 ---
 
-### 📅 Phase 4: Controlled Share Pass Generation & Ephemeral QR Protocol
+### ⏳ Phase 4: Controlled Share Pass Generation & Ephemeral QR Protocol
 - [ ] `SharePass` model with many-to-many document relationships.
 - [ ] Ephemeral key generation (crypto-random 8-character token) and PBKDF2/Argon2 hashing.
 - [ ] Configurable time-to-live (15m, 30m, 2h, 24h, 1-time view).
@@ -94,8 +99,8 @@
 ## 🛠️ Automated Verification Log
 
 ```text
-Test Suite: tests/unit/test_phase1.py & tests/unit/test_phase2.py
-Status: 22 Passed, 0 Failed, 0 Skipped
-Ran: 22 tests in 37.544s
+Test Suite: tests/unit/test_phase1.py, test_phase2.py, test_phase3.py
+Status: 39 Passed, 0 Failed, 0 Skipped
+Ran: 39 tests in 110.891s
 Result: OK
 ```

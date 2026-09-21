@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Personal Document Vault — Passli{% endblock %}
+
+{% block content %}
+<div class="vault-container">
+    <div class="container">
+        <!-- Vault Header -->
+        <div class="vault-header">
+            <div>
+                <h1 class="vault-title">Encrypted Document Vault</h1>
+                <p class="vault-subtitle">
+                    <strong>{{ total_count }}</strong> records stored &bull; <strong>{{ total_mb }} MB</strong> consumed
+                </p>
+            </div>
+            <div class="vault-header-actions">
+                <a href="{% url 'documents_upload' %}" class="btn btn-primary" data-testid="vault-upload-btn">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">upload_file</span> Upload Record
+                </a>
+            </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="vault-toolbar">
+            <!-- Domain Category Filter Pills -->
+            <div class="category-pills">
+                <a href="?category=all{% if search_query %}&q={{ search_query }}{% endif %}" class="cat-pill {% if selected_category == 'all' %}active{% endif %}">
+                    <span>All Records</span>
+                    <span class="pill-count font-mono-data">{{ category_counts.all }}</span>
+                </a>
+                <a href="?category=medical{% if search_query %}&q={{ search_query }}{% endif %}" class="cat-pill {% if selected_category == 'medical' %}active{% endif %}">
+                    <span class="material-symbols-outlined" style="font-size: 15px;">medical_services</span>
+                    <span>Medical</span>
+                    <span class="pill-count font-mono-data">{{ category_counts.medical }}</span>
+                </a>
+                <a href="?category=personal{% if search_query %}&q={{ search_query }}{% endif %}" class="cat-pill {% if selected_category == 'personal' %}active{% endif %}">
+                    <span class="material-symbols-outlined" style="font-size: 15px;">badge</span>
+                    <span>Personal</span>
+                    <span class="pill-count font-mono-data">{{ category_counts.personal }}</span>
+                </a>
+                <a href="?category=education{% if search_query %}&q={{ search_query }}{% endif %}" class="cat-pill {% if selected_category == 'education' %}active{% endif %}">
+                    <span class="material-symbols-outlined" style="font-size: 15px;">school</span>
+                    <span>Education</span>
+                    <span class="pill-count font-mono-data">{{ category_counts.education }}</span>
+                </a>
+                <a href="?category=vehicle{% if search_query %}&q={{ search_query }}{% endif %}" class="cat-pill {% if selected_category == 'vehicle' %}active{% endif %}">
+                    <span class="material-symbols-outlined" style="font-size: 15px;">directions_car</span>
+                    <span>Vehicle</span>
+                    <span class="pill-count font-mono-data">{{ category_counts.vehicle }}</span>
+                </a>
+                <a href="?category=professional{% if search_query %}&q={{ search_query }}{% endif %}" class="cat-pill {% if selected_category == 'professional' %}active{% endif %}">
+                    <span class="material-symbols-outlined" style="font-size: 15px;">work</span>
+                    <span>Professional</span>
+                    <span class="pill-count font-mono-data">{{ category_counts.professional }}</span>
+                </a>
+                <a href="?category=other{% if search_query %}&q={{ search_query }}{% endif %}" class="cat-pill {% if selected_category == 'other' %}active{% endif %}">
+                    <span class="material-symbols-outlined" style="font-size: 15px;">description</span>
+                    <span>Other</span>
+                    <span class="pill-count font-mono-data">{{ category_counts.other }}</span>
+                </a>
+            </div>
+
+            <!-- Search Bar -->
+            <form method="get" action="{% url 'documents_list' %}" class="vault-search-form">
+                {% if selected_category and selected_category != 'all' %}
+                    <input type="hidden" name="category" value="{{ selected_category }}">
+                {% endif %}
+                <div class="search-input-wrapper">
+                    <span class="material-symbols-outlined search-icon" style="font-size: 18px;">search</span>
+                    <input type="text" name="q" value="{{ search_query }}" placeholder="Search records by name, hash, notes..." class="form-input search-input" data-testid="vault-search-input">
+                    {% if search_query %}
+                        <a href="{% url 'documents_list' %}{% if selected_category != 'all' %}?category={{ selected_category }}{% endif %}" class="clear-search-btn" title="Clear search">
+                            <span class="material-symbols-outlined" style="font-size: 16px;">close</span>
+                        </a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+
+        <!-- Documents Content -->
+        {% if documents %}
+            <div class="doc-cards-grid" data-testid="documents-grid">
+                {% for doc in documents %}
+                    <div class="vault-doc-card" data-testid="doc-card-{{ doc.pk }}">
+                        <div class="doc-card-top">
+                            <div class="doc-badge-pill">
+                                <span class="material-symbols-outlined" style="font-size: 14px;">{{ doc.category_icon }}</span>
+                                <span>{{ doc.get_category_display }}</span>
+                            </div>
+                            <span class="doc-size-badge font-mono-data">{{ doc.formatted_size }}</span>
+                        </div>
+
+                        <div class="doc-card-main">
+                            <h3 class="doc-card-title">
+                                <a href="{% url 'document_detail' doc.pk %}">{{ doc.title }}</a>
+                            </h3>
+                            {% if doc.description %}
+                                <p class="doc-card-desc">{{ doc.description|truncatewords:14 }}</p>
+                            {% else %}
+                                <p class="doc-card-desc doc-desc-muted">No additional notes provided.</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="doc-card-checksum font-mono-data">
+                            <span class="material-symbols-outlined" style="font-size: 13px; color: var(--brand-emerald);">verified</span>
+                            <span>sha256: {{ doc.file_hash|slice:":12" }}...{{ doc.file_hash|slice:"-8:" }}</span>
+                        </div>
+
+                        <div class="doc-card-footer">
+                            <a href="{% url 'document_detail' doc.pk %}" class="btn btn-sm btn-secondary" title="View & Preview">
+                                <span class="material-symbols-outlined" style="font-size: 15px;">visibility</span> Inspect
+                            </a>
+                            <a href="{% url 'document_download' doc.pk %}" class="btn btn-sm btn-secondary" title="Download Record">
+                                <span class="material-symbols-outlined" style="font-size: 15px;">download</span>
+                            </a>
+                            <a href="{% url 'share_create' %}?doc={{ doc.pk }}" class="btn btn-sm btn-primary" title="Create Share Pass with this Record">
+                                <span class="material-symbols-outlined" style="font-size: 15px;">qr_code_2</span> Pass
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-vault-card" data-testid="empty-vault-state">
+                <div class="empty-state-icon">
+                    <span class="material-symbols-outlined" style="font-size: 36px;">folder_off</span>
+                </div>
+                {% if search_query or selected_category != 'all' %}
+                    <h3 class="empty-state-title">No Records Match Filters</h3>
+                    <p class="empty-state-text">No documents found matching "{{ search_query }}" in the selected category. Try resetting your search.</p>
+                    <a href="{% url 'documents_list' %}" class="btn btn-secondary btn-sm" style="margin-top: 1rem;">
+                        Reset Filters
+                    </a>
+                {% else %}
+                    <h3 class="empty-state-title">Your Vault is Empty</h3>
+                    <p class="empty-state-text">Upload your sensitive medical panels, ID cards, diplomas, or vehicle certificates with client-side zero-knowledge security.</p>
+                    <a href="{% url 'documents_upload' %}" class="btn btn-primary btn-sm" style="margin-top: 1rem;">
+                        <span class="material-symbols-outlined" style="font-size: 16px;">upload</span> Upload First Document
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

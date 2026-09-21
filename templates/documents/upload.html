@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Upload Document Record — Passli Vault{% endblock %}
+
+{% block content %}
+<div class="vault-container">
+    <div class="container" style="max-width: 680px;">
+        <div style="margin-bottom: 1.5rem;">
+            <a href="{% url 'documents_list' %}" class="auth-link font-mono-data" style="font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.3rem;">
+                <span class="material-symbols-outlined" style="font-size: 15px;">arrow_back</span> Back to Vault Records
+            </a>
+        </div>
+
+        <div class="auth-card" style="max-width: 100%;" data-testid="upload-card">
+            <div class="auth-header" style="text-align: left; margin-bottom: 1.5rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <h1 class="auth-title">Upload Vault Record</h1>
+                    <div class="status-badge font-mono-data" style="font-size: 0.7rem;">
+                        <span class="pulse-dot"></span>
+                        <span>AES-256 Envelope</span>
+                    </div>
+                </div>
+                <p class="auth-subtitle">Add a sensitive document to your personal zero-knowledge encrypted vault</p>
+            </div>
+
+            {% if form.errors %}
+                <div class="alert alert-danger" data-testid="upload-error-box">
+                    <div>
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.2rem;">
+                                    <span class="material-symbols-outlined" style="font-size: 16px;">error</span>
+                                    <span>{{ error }}</span>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <form method="post" enctype="multipart/form-data" class="auth-form" novalidate>
+                {% csrf_token %}
+
+                <!-- File Dropzone -->
+                <div class="form-group">
+                    <label class="form-label">Document File <span style="color: #e11d48;">*</span></label>
+                    <div class="file-dropzone" id="file-dropzone">
+                        <span class="material-symbols-outlined dropzone-icon">cloud_upload</span>
+                        <div class="dropzone-text" id="dropzone-text">
+                            <strong>Choose a file</strong> or drag & drop here
+                        </div>
+                        <div class="dropzone-hint font-mono-data" id="dropzone-hint">
+                            PDF, PNG, JPG, JPEG &bull; Max 25 MB
+                        </div>
+                        {{ form.file }}
+                    </div>
+                    {% if form.file.errors %}
+                        <span class="form-error">{{ form.file.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <!-- Document Title -->
+                <div class="form-group">
+                    <label for="doc-title" class="form-label">Record Title <span style="color: #e11d48;">*</span></label>
+                    {{ form.title }}
+                    {% if form.title.errors %}
+                        <span class="form-error">{{ form.title.errors.0 }}</span>
+                    {% else %}
+                        <span class="form-hint">Descriptive name for easy identification in passes</span>
+                    {% endif %}
+                </div>
+
+                <!-- Domain Category -->
+                <div class="form-group">
+                    <label for="doc-category" class="form-label">Category Domain <span style="color: #e11d48;">*</span></label>
+                    {{ form.category }}
+                    {% if form.category.errors %}
+                        <span class="form-error">{{ form.category.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <!-- Notes / Description -->
+                <div class="form-group">
+                    <label for="doc-description" class="form-label">Notes & Description <span style="color: var(--text-dim);">(Optional)</span></label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <span class="form-error">{{ form.description.errors.0 }}</span>
+                    {% endif %}
+                </div>
+
+                <!-- Submit Button -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-light);">
+                    <a href="{% url 'documents_list' %}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary btn-lg" data-testid="upload-submit-btn">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">lock</span> Encrypt & Store Record
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Drag and drop handler for upload form
+    const dropzone = document.getElementById('file-dropzone');
+    const fileInput = document.getElementById('doc-file-input');
+    const dropzoneText = document.getElementById('dropzone-text');
+    const dropzoneHint = document.getElementById('dropzone-hint');
+    const titleInput = document.getElementById('doc-title');
+
+    if (fileInput && dropzone) {
+        fileInput.addEventListener('change', function(e) {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                dropzoneText.innerHTML = `<strong>${file.name}</strong>`;
+                dropzoneHint.textContent = `${(file.size / (1024 * 1024)).toFixed(2)} MB &bull; Selected`;
+                dropzone.classList.add('has-file');
+
+                // Auto-fill title if empty
+                if (titleInput && !titleInput.value.trim()) {
+                    const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[_-]/g, " ");
+                    titleInput.value = cleanName;
+                }
+            }
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropzone.classList.add('drag-over');
+            }, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('drag-over');
+            }, false);
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                const event = new Event('change');
+                fileInput.dispatchEvent(event);
+            }
+        });
+    }
+</script>
+{% endblock %}

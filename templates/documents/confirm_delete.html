@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Confirm Deletion: {{ document.title }} — Passli Vault{% endblock %}
+
+{% block content %}
+<div class="vault-container">
+    <div class="container" style="max-width: 520px;">
+        <div class="auth-card" style="max-width: 100%; border-color: #fecdd3;" data-testid="delete-confirm-card">
+            <div class="auth-header" style="text-align: center;">
+                <div class="auth-icon-box" style="background-color: #fff1f2; color: #e11d48; border-color: #fecdd3;">
+                    <span class="material-symbols-outlined" style="font-size: 28px;">delete_forever</span>
+                </div>
+                <h1 class="auth-title" style="color: #be123c;">Delete Vault Record</h1>
+                <p class="auth-subtitle">This action is permanent and cannot be undone</p>
+            </div>
+
+            <div style="background-color: var(--bg-app); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.5rem;">
+                <div style="font-size: 0.95rem; font-weight: 700; color: var(--brand-navy); margin-bottom: 0.35rem;">
+                    {{ document.title }}
+                </div>
+                <div class="font-mono-data" style="font-size: 0.75rem; color: var(--text-muted); display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                    <span>{{ document.get_category_display }}</span>
+                    <span>&bull;</span>
+                    <span>{{ document.formatted_size }}</span>
+                    <span>&bull;</span>
+                    <span>sha256: {{ document.file_hash|slice:":10" }}...</span>
+                </div>
+            </div>
+
+            <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1.5rem;">
+                The physical file will be immediately shredded and sanitized from storage. Any active share passes referencing this document will no longer have access to it.
+            </p>
+
+            <form method="post" action="{% url 'document_delete' document.pk %}">
+                {% csrf_token %}
+                <div style="display: flex; gap: 0.75rem; justify-content: space-between;">
+                    <a href="{% url 'document_detail' document.pk %}" class="btn btn-secondary" style="flex: 1;">Cancel</a>
+                    <button type="submit" class="btn btn-primary" style="flex: 1; background-color: #e11d48; border-color: #e11d48;" data-testid="confirm-delete-submit-btn">
+                        <span class="material-symbols-outlined" style="font-size: 16px;">delete</span> Permanently Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

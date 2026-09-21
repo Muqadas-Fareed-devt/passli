@@ -147,7 +147,23 @@
                 </div>
 
                 {% if recent_documents %}
-                    <!-- Document list rendered when available in Phase 3 -->
+                    <div class="dash-doc-list">
+                        {% for doc in recent_documents %}
+                            <a href="{% url 'document_detail' doc.pk %}" class="dash-doc-item">
+                                <div class="dash-doc-icon">
+                                    <span class="material-symbols-outlined" style="font-size: 18px;">{{ doc.category_icon }}</span>
+                                </div>
+                                <div class="dash-doc-meta">
+                                    <div class="dash-doc-title">{{ doc.title }}</div>
+                                    <div class="dash-doc-sub font-mono-data">{{ doc.formatted_size }} &bull; {{ doc.get_category_display }}</div>
+                                </div>
+                                <span class="material-symbols-outlined dash-doc-arrow" style="font-size: 16px;">chevron_right</span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                    <div style="margin-top: 1rem; text-align: right;">
+                        <a href="{% url 'documents_list' %}" class="auth-link font-mono-data" style="font-size: 0.8rem;">View All Records ({{ total_documents }}) &rarr;</a>
+                    </div>
                 {% else %}
                     <div class="empty-state-box" data-testid="empty-docs-state">
                         <div class="empty-state-icon">
