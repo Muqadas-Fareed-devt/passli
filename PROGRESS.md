@@ -1,6 +1,6 @@
 # Passli Development Progress & Roadmap
 
-> **Current Milestone**: Phases 1-3 & Security Audit Suite Completed & Verified (49/49 Automated Tests Passing)  
+> **Current Milestone**: Phases 1-4 & Security Audit Suite Completed & Verified (65/65 Automated Tests Passing)  
 > **Repository**: [github.com/Ali-Nawaz-devt/passli](https://github.com/Ali-Nawaz-devt/passli)  
 > **Status**: Active Development
 
@@ -14,8 +14,8 @@
 | **Phase 2** | User Authentication, Registration & Personal Vault Dashboard | :white_check_mark: Completed | 100% (11/11 Tests) |
 | **Phase 3** | Encrypted Document Vault Management & Categorization | :white_check_mark: Completed | 100% (17/17 Tests) |
 | **Security Audit** | OWASP Top 10, IDOR Prevention, Upload Defense & Checksum Integrity | :white_check_mark: Completed | 100% (10/10 Tests) |
-| **Phase 4** | Controlled Share Pass Generation & Ephemeral QR Protocol | :hourglass_flowing_sand: Up Next | Planned |
-| **Phase 5** | Recipient Verification Portal & Two-Factor Access Flow | :calendar: Scheduled | Planned |
+| **Phase 4** | Controlled Share Pass Generation & Ephemeral QR Protocol | :white_check_mark: Completed | 100% (16/16 Tests) |
+| **Phase 5** | Recipient Verification Portal & Two-Factor Access Flow | :hourglass_flowing_sand: Up Next | Planned |
 | **Phase 6** | Audit Trail, Immediate Revocation & Rate Limiting | :calendar: Scheduled | Planned |
 | **Phase 7** | End-to-End Selenium Test Suite, CI Automation & Production Polish | :calendar: Scheduled | Planned |
 
@@ -75,12 +75,17 @@
 
 ---
 
-### ⏳ Phase 4: Controlled Share Pass Generation & Ephemeral QR Protocol
-- [ ] `SharePass` model with many-to-many document relationships.
-- [ ] Ephemeral key generation (crypto-random 8-character token) and PBKDF2/Argon2 hashing.
-- [ ] Configurable time-to-live (15m, 30m, 2h, 24h, 1-time view).
-- [ ] Granular permission toggles: View-Only vs. Download Allowed.
-- [ ] Dynamic QR code generation (SVG/PNG) for mobile handoff.
+### ✅ Phase 4: Controlled Share Pass Generation & Ephemeral QR Protocol
+- [x] `SharePass` model with many-to-many document relationships, UUID primary keys, and usage constraints.
+- [x] Ephemeral Share Key generation (cryptographically secure 8-character token `XXXX-XXXX`) and PBKDF2 hashing.
+- [x] Zero-knowledge key storage: Plaintext keys never stored on disk; verified via salted PBKDF2 hash.
+- [x] Configurable time-to-live (15m, 30m, 1h, 2h, 24h, 1-time view).
+- [x] Granular permission toggles: In-browser View enforced, Download toggleable.
+- [x] Dynamic high-contrast QR code generation via `qrcode` with base64 data URI and direct PNG attachment streaming.
+- [x] Interactive UI templates: `templates/sharing/create.html`, `detail.html`, and `list.html`.
+- [x] Immediate 1-click revocation mechanism from owner pass details and pass list.
+- [x] Dashboard integration: Live active passes metrics and recent active passes bento panel.
+- [x] 16 automated unit tests created and verified in `tests/unit/test_phase4.py`.
 
 ---
 
@@ -112,8 +117,8 @@
 ## 🛠️ Automated Verification Log
 
 ```text
-Test Suite: tests/unit/test_phase1.py, test_phase2.py, test_phase3.py, test_security.py
-Status: 49 Passed, 0 Failed, 0 Skipped
-Ran: 49 tests in 211.420s
+Test Suite: test_phase1.py, test_phase2.py, test_phase3.py, test_security.py, test_phase4.py
+Status: 65 Passed, 0 Failed, 0 Skipped
+Ran: 65 tests
 Result: OK
 ```

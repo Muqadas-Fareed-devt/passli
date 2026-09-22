@@ -119,7 +119,25 @@
                 </div>
 
                 {% if recent_passes %}
-                    <!-- Passes list rendered when available in Phase 4 -->
+                    <div class="dash-doc-list" data-testid="dash-recent-passes-list">
+                        {% for pass in recent_passes %}
+                            <a href="{% url 'share_detail' pass.pk %}" class="dash-doc-item" data-testid="dash-pass-item-{{ pass.pk }}">
+                                <div class="dash-doc-icon" style="background: rgba(16, 185, 129, 0.1); color: #34d399;">
+                                    <span class="material-symbols-outlined" style="font-size: 18px;">qr_code_2</span>
+                                </div>
+                                <div class="dash-doc-meta">
+                                    <div class="dash-doc-title">{{ pass.title|default:"Share Pass" }}</div>
+                                    <div class="dash-doc-sub font-mono-data">
+                                        {{ pass.documents.count }} record{{ pass.documents.count|pluralize }} &bull; {{ pass.time_remaining_seconds }}s remaining
+                                    </div>
+                                </div>
+                                <span class="material-symbols-outlined dash-doc-arrow" style="font-size: 16px;">chevron_right</span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                    <div style="margin-top: 1rem; text-align: right;">
+                        <a href="{% url 'share_list' %}" class="auth-link font-mono-data" style="font-size: 0.8rem;">View All Passes ({{ total_passes }}) &rarr;</a>
+                    </div>
                 {% else %}
                     <div class="empty-state-box" data-testid="empty-passes-state">
                         <div class="empty-state-icon">

@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from django.db.models import Sum
 from .forms import RegisterForm, LoginForm
 from documents.models import Document
+from sharing.models import SharePass
 
 
 def landing_view(request):
@@ -71,10 +72,12 @@ def dashboard_view(request):
     storage_quota_mb = 500.0  # 500 MB default vault quota
     storage_pct = min(100, int((storage_used_mb / storage_quota_mb) * 100)) if storage_quota_mb > 0 else 0
 
-    # Share passes calculation (Phase 4 integration)
-    total_passes = getattr(request.user, 'share_passes', None)
-    total_passes_count = total_passes.count() if total_passes is not None else 0
-    active_passes_count = total_passes.filter(is_revoked=False).count() if total_passes is not None else 0
+    # Share passes metrics
+    all_passes = SharePass.objects.filter(owner=request.user).prefetch_related('documents').order_by('-created_at')
+    total_passes_count = all_passes.count()
+    active_passes = [p for p in all_passes if p.is_active()]
+    active_passes_count = len(active_passes)
+    recent_passes = active_passes[:4]
 
     recent_documents = user_docs.order_by('-created_at')[:4]
 
@@ -86,6 +89,6 @@ def dashboard_view(request):
         'storage_quota_mb': f"{storage_quota_mb:.0f}",
         'storage_pct': storage_pct,
         'recent_documents': recent_documents,
-        'recent_passes': [],
+        'recent_passes': recent_passes,
     }
     return render(request, 'accounts/dashboard.html', context)

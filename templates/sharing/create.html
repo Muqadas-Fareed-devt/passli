@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Create Share Pass — Passli Personal Vault{% endblock %}
+
+{% block content %}
+<div class="container" style="padding-top: 2rem; padding-bottom: 4rem; max-width: 860px;">
+    <!-- Breadcrumb & Header -->
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                <a href="{% url 'dashboard' %}" style="color: var(--text-muted); text-decoration: none;">Dashboard</a>
+                <span>/</span>
+                <a href="{% url 'share_list' %}" style="color: var(--text-muted); text-decoration: none;">Share Passes</a>
+                <span>/</span>
+                <span style="color: var(--text-primary);">Create Pass</span>
+            </div>
+            <h1 style="font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; margin: 0;">Generate Ephemeral Share Pass</h1>
+        </div>
+        <a href="{% url 'share_list' %}" class="btn btn-secondary btn-sm" data-testid="back-to-passes">
+            <span class="material-symbols-outlined" style="font-size: 16px;">arrow_back</span> Back to Passes
+        </a>
+    </div>
+
+    {% if user_docs_count == 0 %}
+        <!-- Empty State: No documents uploaded yet -->
+        <div class="card" style="padding: 3rem 2rem; text-align: center; border: 1px dashed var(--border-color); background: var(--bg-surface);" data-testid="no-docs-warning">
+            <div style="width: 56px; height: 56px; border-radius: 12px; background: rgba(99, 102, 241, 0.1); color: var(--color-primary); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem;">
+                <span class="material-symbols-outlined" style="font-size: 32px;">folder_off</span>
+            </div>
+            <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem;">No Vault Records Available</h3>
+            <p style="color: var(--text-secondary); max-width: 440px; margin: 0 auto 1.5rem; font-size: 0.9rem;">
+                You must upload at least one client-encrypted document before you can generate a time-gated Share Pass.
+            </p>
+            <a href="{% url 'document_upload' %}" class="btn btn-primary" data-testid="upload-first-doc-btn">
+                <span class="material-symbols-outlined" style="font-size: 18px;">upload_file</span> Upload First Document
+            </a>
+        </div>
+    {% else %}
+        <!-- Pass Creation Form -->
+        <form method="post" action="{% url 'share_create' %}" data-testid="share-create-form" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger" style="margin-bottom: 1.5rem;" data-testid="form-errors">
+                    {% for error in form.non_field_errors %}
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <span class="material-symbols-outlined" style="font-size: 18px;">error</span>
+                            <span>{{ error }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Section 1: Document Selection Checklist -->
+            <div class="card" style="padding: 1.5rem; margin-bottom: 1.5rem; background: var(--bg-surface);">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                    <div>
+                        <h2 style="font-size: 1.1rem; font-weight: 600; margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                            <span class="material-symbols-outlined" style="color: var(--color-primary); font-size: 20px;">checklist</span>
+                            1. Select Documents to Include
+                        </h2>
+                        <p style="color: var(--text-muted); font-size: 0.8rem; margin: 0.25rem 0 0;">
+                            Recipients will only receive access to the records you explicitly check below.
+                        </p>
+                    </div>
+                </div>
+
+                {% if form.documents.errors %}
+                    <div style="padding: 0.5rem 0.75rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 6px; color: #f87171; font-size: 0.825rem; margin-bottom: 1rem;" data-testid="doc-selection-error">
+                        {{ form.documents.errors.0 }}
+                    </div>
+                {% endif %}
+
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 320px; overflow-y: auto; padding-right: 0.25rem;" data-testid="doc-checklist">
+                    {% for doc in form.fields.documents.queryset %}
+                        <label for="id_documents_{{ forloop.counter0 }}" 
+                               style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); cursor: pointer; transition: all 0.15s ease;" 
+                               class="doc-select-row">
+                            <input type="checkbox" 
+                                   name="documents" 
+                                   value="{{ doc.id }}" 
+                                   id="id_documents_{{ forloop.counter0 }}"
+                                   data-testid="doc-checkbox-{{ doc.id }}"
+                                   style="width: 18px; height: 18px; accent-color: var(--color-primary); cursor: pointer;"
+                                   {% if doc.id|stringformat:"s" in form.data.documents or doc.id in form.initial.documents %}checked{% endif %}>
+                            
+                            <div style="display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 6px; background: rgba(99, 102, 241, 0.1); color: var(--color-primary); flex-shrink: 0;">
+                                {% if doc.is_pdf %}
+                                    <span class="material-symbols-outlined" style="font-size: 20px;">picture_as_pdf</span>
+                                {% else %}
+                                    <span class="material-symbols-outlined" style="font-size: 20px;">image</span>
+                                {% endif %}
+                            </div>
+
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="font-weight: 500; font-size: 0.9rem; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    {{ doc.title }}
+                                </div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem;">
+                                    <span class="badge" style="font-size: 0.7rem; padding: 0.1rem 0.4rem;">{{ doc.get_category_display }}</span>
+                                    <span>{{ doc.formatted_size }}</span>
+                                    <span>&bull;</span>
+                                    <span>{{ doc.created_at|date:"M d, Y" }}</span>
+                                </div>
+                            </div>
+                        </label>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Section 2: Expiration, Permissions & Context -->
+            <div class="card" style="padding: 1.5rem; margin-bottom: 1.5rem; background: var(--bg-surface);">
+                <h2 style="font-size: 1.1rem; font-weight: 600; margin: 0 0 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span class="material-symbols-outlined" style="color: var(--color-primary); font-size: 20px;">tune</span>
+                    2. Security Constraints & Expiration
+                </h2>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                    <!-- Pass Title / Label -->
+                    <div style="grid-column: span 2;">
+                        <label for="{{ form.title.id_for_label }}" class="form-label" style="font-size: 0.85rem; font-weight: 500; margin-bottom: 0.35rem;">
+                            Pass Label / Recipient (Optional)
+                        </label>
+                        {{ form.title }}
+                        <span class="form-hint" style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; display: block;">
+                            Helpful tag to identify this pass on your dashboard (e.g., 'City Clinic Dr. Sarah').
+                        </span>
+                    </div>
+
+                    <!-- Expiration Duration -->
+                    <div>
+                        <label for="{{ form.expires_in.id_for_label }}" class="form-label" style="font-size: 0.85rem; font-weight: 500; margin-bottom: 0.35rem;">
+                            Access Expiration TTL
+                        </label>
+                        {{ form.expires_in }}
+                        {% if form.expires_in.errors %}
+                            <span class="form-error">{{ form.expires_in.errors.0 }}</span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Permissions Matrix Box -->
+                    <div>
+                        <label class="form-label" style="font-size: 0.85rem; font-weight: 500; margin-bottom: 0.35rem;">
+                            Access Permissions
+                        </label>
+                        <div style="display: flex; flex-direction: column; gap: 0.6rem; padding: 0.75rem; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border-color);">
+                            <!-- View Permission (Locked) -->
+                            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem;">
+                                <div style="display: flex; align-items: center; gap: 0.4rem;">
+                                    <span class="material-symbols-outlined" style="color: #10b981; font-size: 16px;">visibility</span>
+                                    <span>In-Browser View</span>
+                                </div>
+                                <span style="font-size: 0.7rem; color: #10b981; font-weight: 600; text-transform: uppercase;">Required</span>
+                            </div>
+
+                            <div style="height: 1px; background: var(--border-color);"></div>
+
+                            <!-- Download Permission Toggle -->
+                            <label for="{{ form.can_download.id_for_label }}" style="display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; cursor: pointer; margin: 0;">
+                                <div style="display: flex; align-items: center; gap: 0.4rem;">
+                                    <span class="material-symbols-outlined" style="color: var(--text-secondary); font-size: 16px;">download</span>
+                                    <span>Allow File Download</span>
+                                </div>
+                                {{ form.can_download }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Controls -->
+            <div style="display: flex; align-items: center; justify-content: flex-end; gap: 1rem;">
+                <a href="{% url 'share_list' %}" class="btn btn-secondary" data-testid="cancel-pass-btn">Cancel</a>
+                <button type="submit" class="btn btn-primary btn-lg" data-testid="generate-pass-btn">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">qr_code</span> Generate Share Pass
+                </button>
+            </div>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}
