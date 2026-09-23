@@ -700,106 +700,67 @@ Avoid fragile selectors based on CSS layout or visible text where practical.
 
 ### Phase 0 — Naming and branding
 
-- Finalize project name
-- Create GitHub repository
-- Create README skeleton
-- Define visual identity
+- [x] Finalize project name
+- [x] Create GitHub repository
+- [x] Create README skeleton
+- [x] Define visual identity & unique brand logo suite
 
 ### Phase 1 — Project setup
 
-- Django project
-- Environment configuration
-- Database
-- Base layout
-- Static/media handling
+- [x] Django project
+- [x] Environment configuration
+- [x] Database
+- [x] Base layout & Anti-Slop UI system
+- [x] Static/media handling
 
 ### Phase 2 — Authentication
 
-- Registration
-- Login
-- Logout
-- Protected dashboard
+- [x] Registration
+- [x] Login
+- [x] Logout
+- [x] Protected dashboard
 
 ### Phase 3 — Documents
 
-- Upload
-- Categories
-- Metadata
-- View
-- Download
-- Delete
+- [x] Upload
+- [x] Categories
+- [x] Metadata & SHA-256 Checksums
+- [x] View / In-Browser Decrypted Preview
+- [x] Download
+- [x] Delete
 
-### Phase 4 — Share Pass
+### Phase 4 — Share Pass & Ephemeral QR
 
-- Document selection
-- Permissions
-- Expiration
-- Secure token
-- Secure key
-- Database models
+- [x] Document selection
+- [x] Permissions (View / Download gating)
+- [x] Expiration (TTL & 1-time view)
+- [x] Secure token (UUID)
+- [x] Secure key (Cryptographically random 8-char token + PBKDF2 hash)
+- [x] Database models (`SharePass`)
+- [x] Dynamic QR generation (Base64 SVG/PNG & direct attachment streaming)
+- [x] Pass inspection & 1-click immediate revocation
+- [x] Dashboard live metrics integration
 
-### Phase 5 — QR
+### Phase 5 — Recipient Access & Verification Portal
 
-- QR generation
-- QR display
-- QR download
+- [ ] Share URL (`/p/<uuid:pass_id>/`)
+- [ ] Key verification & rate limiting
+- [ ] Permission enforcement
+- [ ] Recipient in-browser document access
 
-### Phase 6 — Recipient access
+### Phase 6 — Audit History & Security Hardening
 
-- Share URL
-- Key verification
-- Permission enforcement
-- Document access
+- [ ] Access logs (`ShareAccessLog`)
+- [ ] Owner activity audit page
+- [ ] Defensive security headers (CSP, HSTS)
 
-### Phase 7 — Security
+### Phase 7 — Selenium & Release
 
-- Authorization checks
-- Key hashing
-- Rate limiting
-- Expiration checks
-- Revocation
-- Secure file access
-
-### Phase 8 — Access history
-
-- Access logs
-- Owner activity page
-
-### Phase 9 — UI/UX
-
-- Responsive design
-- Empty states
-- Error states
-- Loading states
-- Success notifications
-- Accessibility basics
-
-### Phase 10 — Selenium
-
-- Selenium test framework
-- Required assignment tests
-- Extended tests
-- Screenshots
-- Test report
-
-### Phase 11 — Deployment
-
-- Production database
-- Production file storage
-- Environment variables
-- HTTPS
-- Deployment
-- Smoke tests
-
-### Phase 12 — Documentation
-
-- README
-- Architecture diagram
-- Setup instructions
-- API/documentation if applicable
-- Selenium test documentation
-- Screenshots
-- Demo instructions
+- [ ] Selenium test framework
+- [ ] Required assignment tests (TC01-TC05)
+- [ ] Extended tests (TC06-TC19)
+- [ ] Screenshots & Test report
+- [ ] Production deployment & polish
 
 ---
 
@@ -807,15 +768,15 @@ Avoid fragile selectors based on CSS layout or visible text where practical.
 
 MVP is complete when:
 
-- [ ] User can register/login.
-- [ ] User can upload supported documents.
-- [ ] User can categorize documents.
-- [ ] User can view/download/delete owned documents.
-- [ ] User can select specific documents.
-- [ ] User can create a Share Pass.
-- [ ] Share Pass generates a secure QR URL.
-- [ ] Share Pass generates a separate Share Key.
-- [ ] Share Key is securely stored.
+- [x] User can register/login.
+- [x] User can upload supported documents.
+- [x] User can categorize documents.
+- [x] User can view/download/delete owned documents.
+- [x] User can select specific documents.
+- [x] User can create a Share Pass.
+- [x] Share Pass generates a secure QR URL.
+- [x] Share Pass generates a separate Share Key.
+- [x] Share Key is securely stored (PBKDF2 salted hash).
 - [ ] Recipient can scan/open the QR URL.
 - [ ] Recipient must provide the Share Key.
 - [ ] Invalid keys are rejected.
@@ -827,8 +788,8 @@ MVP is complete when:
 - [ ] Basic access events are recorded.
 - [ ] Selenium tests pass.
 - [ ] Test screenshots are captured.
-- [ ] Application is deployable.
-- [ ] README explains setup and architecture.
+- [x] Application is deployable (configured for Railway / Gunicorn / WhiteNoise).
+- [x] README explains setup and architecture.
 
 ---
 

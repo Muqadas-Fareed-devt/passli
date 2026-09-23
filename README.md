@@ -3,7 +3,7 @@
 [![Python Version](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/django-5.1-green.svg)](https://www.djangoproject.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-39%20passing-brightgreen.svg)](tests/)
+[![Tests](https://img.shields.io/badge/tests-65%20passing-brightgreen.svg)](tests/)
 [![Security](https://img.shields.io/badge/security-Zero--Knowledge-informational.svg)](SECURITY.md)
 
 **Passli** is a web-based personal records vault and cryptographic document-sharing platform designed for situations where you need to share specific sensitive records—without exposing your entire cloud account, master credentials, or sending unencrypted email attachments.
@@ -129,7 +129,7 @@ For a complete breakdown of features, phases, and ongoing work, see [PROGRESS.md
 - [x] **Phase 1**: Project Foundation, Anti-Slop UI & Landing Page (Complete)
 - [x] **Phase 2**: User Authentication & Vault Dashboard (Complete)
 - [x] **Phase 3**: Document Vault Management & Categorization (Complete)
-- [ ] **Phase 4**: Controlled Share Pass Generation & Ephemeral QR Protocol
+- [x] **Phase 4**: Controlled Share Pass Generation & Ephemeral QR Protocol (Complete)
 - [ ] **Phase 5**: Recipient Verification Portal & Two-Factor Access Flow
 - [ ] **Phase 6**: Audit Trail, Immediate Revocation & Rate Limiting
 - [ ] **Phase 7**: Selenium E2E Automation & Production Deployment
