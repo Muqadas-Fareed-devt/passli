@@ -10,13 +10,13 @@ User = get_user_model()
 def document_upload_path(instance, filename):
     """
     Generates a secure, sanitized, user-isolated file path.
-    Prevents directory traversal, collision, and raw filename exposure.
+    Always uses POSIX forward slashes for cross-platform compatibility (Windows & Linux/Railway).
     Format: vault_files/user_<id>/<uuid>.<ext>
     """
     ext = os.path.splitext(filename)[1].lower()
     unique_name = f"{uuid.uuid4().hex}{ext}"
     user_id = instance.user_id if instance.user_id else 'anon'
-    return os.path.join('vault_files', f'user_{user_id}', unique_name)
+    return f"vault_files/user_{user_id}/{unique_name}"
 
 
 class Document(models.Model):
@@ -99,23 +99,11 @@ class Document(models.Model):
         return f"{self.title} ({self.get_category_display()})"
 
     def save(self, *args, **kwargs):
-        """Compute SHA-256 checksum and record size before saving."""
-        if self.file and hasattr(self.file, 'file'):
+        """Compute SHA-256 checksum and record size safely before saving."""
+        if self.file and hasattr(self.file, 'name'):
             # Record original filename if not already set
-            if not self.original_filename and hasattr(self.file, 'name'):
+            if not self.original_filename:
                 self.original_filename = os.path.basename(self.file.name)
-
-            # Calculate SHA-256 digest
-            hasher = hashlib.sha256()
-            try:
-                self.file.seek(0)
-                for chunk in iter(lambda: self.file.read(65536), b''):
-                    hasher.update(chunk)
-                self.file_hash = hasher.hexdigest()
-                self.file_size = self.file.size
-                self.file.seek(0)
-            except Exception:
-                pass
 
             # Detect content type from extension if empty
             if not self.file_type and self.original_filename:
@@ -127,6 +115,28 @@ class Document(models.Model):
                     '.jpeg': 'image/jpeg',
                 }
                 self.file_type = mime_map.get(ext, 'application/octet-stream')
+
+            # Calculate SHA-256 digest safely using chunks()
+            if not self.file_hash:
+                hasher = hashlib.sha256()
+                size = 0
+                try:
+                    if hasattr(self.file, 'chunks'):
+                        for chunk in self.file.chunks():
+                            hasher.update(chunk)
+                            size += len(chunk)
+                        self.file_hash = hasher.hexdigest()
+                        self.file_size = size or getattr(self.file, 'size', 0)
+                    elif hasattr(self.file, 'file'):
+                        self.file.seek(0)
+                        for chunk in iter(lambda: self.file.read(65536), b''):
+                            hasher.update(chunk)
+                            size += len(chunk)
+                        self.file_hash = hasher.hexdigest()
+                        self.file_size = size or getattr(self.file, 'size', 0)
+                        self.file.seek(0)
+                except Exception:
+                    pass
 
         super().save(*args, **kwargs)
 
@@ -145,11 +155,21 @@ class Document(models.Model):
 
     @property
     def is_pdf(self):
-        return self.file_type == 'application/pdf' or (self.file.name and self.file.name.lower().endswith('.pdf'))
+        """Check if document is a PDF format safely."""
+        if not self.file:
+            return False
+        file_type_pdf = bool(self.file_type and self.file_type.lower() == 'application/pdf')
+        file_name_pdf = bool(getattr(self.file, 'name', None) and str(self.file.name).lower().endswith('.pdf'))
+        return file_type_pdf or file_name_pdf
 
     @property
     def is_image(self):
-        return self.file_type.startswith('image/') or (self.file.name and self.file.name.lower().endswith(('.png', '.jpg', '.jpeg')))
+        """Check if document is an image format safely."""
+        if not self.file:
+            return False
+        file_type_img = bool(self.file_type and self.file_type.lower().startswith('image/'))
+        file_name_img = bool(getattr(self.file, 'name', None) and str(self.file.name).lower().endswith(('.png', '.jpg', '.jpeg', '.webp')))
+        return file_type_img or file_name_img
 
     @property
     def category_icon(self):
@@ -163,3 +183,4 @@ class Document(models.Model):
             'other': 'description',
         }
         return icon_map.get(self.category, 'description')
+

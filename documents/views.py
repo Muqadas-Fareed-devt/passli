@@ -1,3 +1,4 @@
+import logging
 import os
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -6,6 +7,8 @@ from django.http import FileResponse, Http404
 from django.db.models import Q, Sum
 from .models import Document
 from .forms import DocumentUploadForm, DocumentEditForm
+
+logger = logging.getLogger(__name__)
 
 
 @login_required(login_url='login')
@@ -70,11 +73,15 @@ def documents_upload_view(request):
     if request.method == 'POST':
         form = DocumentUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            document = form.save(commit=False)
-            document.user = request.user
-            document.save()
-            messages.success(request, f"Document '{document.title}' encrypted and stored in your vault.")
-            return redirect('document_detail', pk=document.pk)
+            try:
+                document = form.save(commit=False)
+                document.user = request.user
+                document.save()
+                messages.success(request, f"Document '{document.title}' encrypted and stored in your vault.")
+                return redirect('document_detail', pk=document.pk)
+            except Exception as e:
+                logger.error(f"Error saving uploaded document: {e}", exc_info=True)
+                messages.error(request, f"An error occurred while saving the document: {str(e)}")
     else:
         # Pre-select category from query param if provided
         initial_category = request.GET.get('category', 'other')
@@ -95,6 +102,33 @@ def document_detail_view(request, pk):
 
 
 @login_required(login_url='login')
+def document_preview_view(request, pk):
+    """
+    Secure in-browser document preview stream.
+    Protected against IDOR: only the document owner can preview.
+    Uses 'inline' Content-Disposition for browser rendering (PDF/PNG/JPG).
+    """
+    document = get_object_or_404(Document, pk=pk, user=request.user)
+    
+    if not document.file:
+        raise Http404("Document file could not be found.")
+
+    try:
+        file_obj = document.file.open('rb')
+    except (FileNotFoundError, OSError, ValueError):
+        raise Http404("Document file could not be opened on storage.")
+
+    filename = document.original_filename or f"{document.title}{os.path.splitext(document.file.name)[1]}"
+    response = FileResponse(
+        file_obj,
+        as_attachment=False,
+        filename=filename,
+        content_type=document.file_type or 'application/octet-stream'
+    )
+    return response
+
+
+@login_required(login_url='login')
 def document_download_view(request, pk):
     """
     Secure document download stream.
@@ -102,15 +136,21 @@ def document_download_view(request, pk):
     """
     document = get_object_or_404(Document, pk=pk, user=request.user)
     
-    if not document.file or not os.path.exists(document.file.path):
-        raise Http404("Document file could not be found on storage.")
+    if not document.file:
+        raise Http404("Document file could not be found.")
 
+    try:
+        file_obj = document.file.open('rb')
+    except (FileNotFoundError, OSError, ValueError):
+        raise Http404("Document file could not be opened on storage.")
+
+    download_filename = document.original_filename or f"{document.title}{os.path.splitext(document.file.name)[1]}"
     response = FileResponse(
-        open(document.file.path, 'rb'),
+        file_obj,
+        as_attachment=True,
+        filename=download_filename,
         content_type=document.file_type or 'application/octet-stream'
     )
-    download_filename = document.original_filename or f"{document.title}{os.path.splitext(document.file.name)[1]}"
-    response['Content-Disposition'] = f'attachment; filename="{download_filename}"'
     return response
 
 

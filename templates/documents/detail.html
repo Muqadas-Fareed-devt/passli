@@ -38,10 +38,10 @@
 
                 <div class="preview-content-box">
                     {% if document.is_pdf %}
-                        <iframe src="{{ document.file.url }}#toolbar=0" class="pdf-preview-frame" title="{{ document.title }}"></iframe>
+                        <iframe src="{% url 'document_preview' document.pk %}#toolbar=0" class="pdf-preview-frame" title="{{ document.title }}"></iframe>
                     {% elif document.is_image %}
                         <div class="image-preview-wrapper">
-                            <img src="{{ document.file.url }}" alt="{{ document.title }}" class="image-preview-img">
+                            <img src="{% url 'document_preview' document.pk %}" alt="{{ document.title }}" class="image-preview-img">
                         </div>
                     {% else %}
                         <div class="empty-state-box">
