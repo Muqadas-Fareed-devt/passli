@@ -34,9 +34,9 @@
 
             <form method="post" action="{% url 'document_delete' document.pk %}">
                 {% csrf_token %}
-                <div style="display: flex; gap: 0.75rem; justify-content: space-between;">
-                    <a href="{% url 'document_detail' document.pk %}" class="btn btn-secondary" style="flex: 1;">Cancel</a>
-                    <button type="submit" class="btn btn-primary" style="flex: 1; background-color: #e11d48; border-color: #e11d48;" data-testid="confirm-delete-submit-btn">
+                <div style="display: flex; gap: 0.75rem; justify-content: space-between; flex-wrap: wrap;">
+                    <a href="{% url 'document_detail' document.pk %}" class="btn btn-secondary" style="flex: 1; min-width: 120px;">Cancel</a>
+                    <button type="submit" class="btn btn-primary" style="flex: 1; min-width: 160px; background-color: #e11d48; border-color: #e11d48;" data-testid="confirm-delete-submit-btn">
                         <span class="material-symbols-outlined" style="font-size: 16px;">delete</span> Permanently Delete
                     </button>
                 </div>
