@@ -51,7 +51,7 @@
                     {% endif %}
                 </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-light);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-light); flex-wrap: wrap; gap: 0.75rem;">
                     <a href="{% url 'document_detail' document.pk %}" class="btn btn-secondary">Cancel</a>
                     <button type="submit" class="btn btn-primary" data-testid="edit-submit-btn">
                         <span class="material-symbols-outlined" style="font-size: 16px;">save</span> Save Changes
