@@ -24,7 +24,7 @@
         <!-- Filter & Search Toolbar -->
         <div class="vault-toolbar">
             <!-- Domain Category Filter Pills -->
-            <div class="category-pills">
+            <div class="category-pills" style="overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; padding-bottom: 0.35rem;">
                 <a href="?category=all{% if search_query %}&q={{ search_query }}{% endif %}" class="cat-pill {% if selected_category == 'all' %}active{% endif %}">
                     <span>All Records</span>
                     <span class="pill-count font-mono-data">{{ category_counts.all }}</span>
