@@ -11,7 +11,7 @@
             <a href="{% url 'documents_list' %}" class="auth-link font-mono-data" style="font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.3rem;">
                 <span class="material-symbols-outlined" style="font-size: 15px;">arrow_back</span> Back to Vault Records
             </a>
-            <div style="display: flex; gap: 0.5rem;">
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                 <a href="{% url 'document_edit' document.pk %}" class="btn btn-sm btn-secondary" data-testid="doc-edit-btn">
                     <span class="material-symbols-outlined" style="font-size: 15px;">edit</span> Edit Details
                 </a>
