@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Verify Share Key — Passli Recipient Portal{% endblock %}
+
+{% block content %}
+<div class="auth-layout" style="min-height: calc(100vh - 160px); display: flex; align-items: center; justify-content: center; padding: 2.5rem 1rem;">
+    <div class="auth-card" style="max-width: 480px; width: 100%; border: 1px solid var(--border-light); background: var(--bg-card); border-radius: var(--radius-lg); box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.07); padding: 2.25rem;">
+        
+        <!-- Recipient Header -->
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <div style="width: 52px; height: 52px; border-radius: 50%; background: #f0fdf4; border: 1px solid #bbf7d0; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1rem;">
+                <span class="material-symbols-outlined" style="font-size: 26px; color: var(--brand-emerald);">key</span>
+            </div>
+            <h1 style="font-size: 1.4rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.4rem; letter-spacing: -0.02em;">
+                Enter 8-Character Share Key
+            </h1>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0; line-height: 1.5;">
+                This cryptographic pass contains <strong style="color: var(--text-primary);">{{ documents_count }} shared document record{{ documents_count|pluralize }}</strong>. Enter the access key provided by the vault owner to decrypt and view.
+            </p>
+        </div>
+
+        <!-- Pass Metadata Brief -->
+        <div style="background: #f8fafc; border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.75rem; font-size: 0.8rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                <span style="color: var(--text-muted); font-size: 0.75rem; font-weight: 600;">PASS REFERENCE:</span>
+                <span class="font-mono-data" style="color: var(--brand-navy); font-weight: 700; font-size: 0.75rem;">{{ pass.id|stringformat:"s"|slice:":8"|upper }}</span>
+            </div>
+            {% if pass.title %}
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                <span style="color: var(--text-muted); font-size: 0.75rem; font-weight: 600;">PURPOSE:</span>
+                <span style="color: var(--text-primary); font-weight: 600;">{{ pass.title }}</span>
+            </div>
+            {% endif %}
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="color: var(--text-muted); font-size: 0.75rem; font-weight: 600;">PERMISSIONS:</span>
+                <span style="font-size: 0.75rem; font-weight: 600; color: {% if pass.can_download %}var(--brand-emerald){% else %}var(--text-secondary){% endif %};">
+                    {% if pass.can_download %}In-Browser View & Download{% else %}In-Browser View Only{% endif %}
+                </span>
+            </div>
+        </div>
+
+        <!-- Key Input Form -->
+        <form method="post" action="{% url 'recipient_verify' pass.id %}" novalidate id="recipientKeyForm">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-error" style="margin-bottom: 1.25rem; font-size: 0.85rem;">
+                    {% for error in form.non_field_errors %}
+                        <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label for="id_access_key" style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.04em;">
+                    Share Key
+                </label>
+                
+                <div style="position: relative;">
+                    {{ form.access_key }}
+                </div>
+
+                {% if form.access_key.errors %}
+                    <div style="color: #e11d48; font-size: 0.8rem; margin-top: 0.4rem; font-weight: 600; display: flex; align-items: center; gap: 0.3rem;">
+                        <span class="material-symbols-outlined" style="font-size: 15px;">error</span>
+                        <span>{{ form.access_key.errors.0 }}</span>
+                    </div>
+                {% endif %}
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">
+                        Format: <span class="font-mono-data">XXXX-XXXX</span>
+                    </span>
+                    <span style="font-size: 0.75rem; color: {% if remaining_attempts <= 2 %}#e11d48{% else %}var(--text-muted){% endif %}; font-weight: 600;">
+                        {{ remaining_attempts }} of {{ max_attempts }} attempts remaining
+                    </span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block btn-lg" style="height: 48px; font-weight: 700;" data-testid="submit-share-key-btn">
+                <span class="material-symbols-outlined" style="font-size: 18px;">lock_open</span>
+                <span>Decrypt & Access Documents</span>
+            </button>
+        </form>
+
+        <!-- Security Guarantee Footer -->
+        <div style="margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--border-light); text-align: center;">
+            <div style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.75rem; color: var(--text-muted);">
+                <span class="material-symbols-outlined" style="font-size: 15px; color: var(--brand-emerald);">verified_user</span>
+                <span>Zero master credential exposure • Time-gated session</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const keyInput = document.getElementById('id_access_key') || document.querySelector('[data-testid="recipient-key-input"]');
+        if (keyInput) {
+            keyInput.focus();
+            
+            // Auto-format key with hyphen after 4 characters: XXXX-XXXX
+            keyInput.addEventListener('input', function(e) {
+                let val = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                if (val.length > 8) {
+                    val = val.substring(0, 8);
+                }
+                if (val.length > 4) {
+                    this.value = val.substring(0, 4) + '-' + val.substring(4);
+                } else {
+                    this.value = val;
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -9,6 +9,7 @@ urlpatterns = [
     path('', include('accounts.urls')),
     path('documents/', include('documents.urls')),
     path('share/', include('sharing.urls')),
+    path('p/', include('sharing.recipient_urls')),
     path('audit/', include('audit.urls')),
 ]
 

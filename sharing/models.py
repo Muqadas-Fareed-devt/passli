@@ -62,11 +62,18 @@ class SharePass(models.Model):
                 return True
         return False
 
+    check_key = verify_key
+
+
+    def is_limit_reached(self) -> bool:
+        """Checks if single-use or limited use pass has met max uses limit."""
+        return bool(self.max_uses > 0 and self.access_count >= self.max_uses)
+
     def is_expired(self) -> bool:
         """Checks if the pass has surpassed its expiration timestamp or max usage."""
         if timezone.now() >= self.expires_at:
             return True
-        if self.max_uses > 0 and self.access_count >= self.max_uses:
+        if self.is_limit_reached():
             return True
         return False
 
@@ -101,7 +108,8 @@ class SharePass(models.Model):
 
     def get_recipient_url(self, request=None) -> str:
         """Returns public recipient URL for QR code and sharing."""
-        path = f"/p/{self.id}/"
+        path = reverse('recipient_verify', kwargs={'pass_id': self.id})
         if request:
             return request.build_absolute_uri(path)
         return path
+

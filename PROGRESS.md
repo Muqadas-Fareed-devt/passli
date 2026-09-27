@@ -15,13 +15,14 @@
 | **Phase 3** | Encrypted Document Vault Management & Categorization | :white_check_mark: Completed | 100% (17/17 Tests) |
 | **Security Audit** | OWASP Top 10, IDOR Prevention, Upload Defense & Checksum Integrity | :white_check_mark: Completed | 100% (10/10 Tests) |
 | **Phase 4** | Controlled Share Pass Generation & Ephemeral QR Protocol | :white_check_mark: Completed | 100% (16/16 Tests) |
-| **Phase 5** | Recipient Verification Portal & Two-Factor Access Flow | :hourglass_flowing_sand: Up Next | Planned |
-| **Phase 6** | Audit Trail, Immediate Revocation & Rate Limiting | :calendar: Scheduled | Planned |
+| **Phase 5** | Recipient Verification Portal & Two-Factor Access Flow | :white_check_mark: Completed | 100% (14/14 Tests) |
+| **Phase 6** | Audit Trail, Immediate Revocation & Rate Limiting | :hourglass_flowing_sand: Up Next | Planned |
 | **Phase 7** | End-to-End Selenium Test Suite, CI Automation & Production Polish | :calendar: Scheduled | Planned |
 
 ---
 
 ## 🎯 Phase Details & Deliverables
+
 
 ### ✅ Phase 1: Foundation, Anti-Slop Design System & Landing Page
 - [x] Django 5 project initialized with modular app architecture (`accounts`, `documents`, `sharing`, `audit`, `config`).
@@ -89,12 +90,14 @@
 
 ---
 
-### 📅 Phase 5: Recipient Verification Portal & Two-Factor Access Flow
-- [ ] Public recipient route `/p/<uuid:pass_id>/` requiring Share Key submission.
-- [ ] Rate-limited key verification (5 attempts max before automatic lockout).
-- [ ] Isolated in-browser viewer for authorized documents without account leakage.
-- [ ] Server-enforced download gating.
-- [ ] Expired / Revoked pass error states with clean security diagnostics.
+### ✅ Phase 5: Recipient Verification Portal & Two-Factor Access Flow
+- [x] Public recipient route `/p/<uuid:pass_id>/` requiring Share Key submission.
+- [x] Rate-limited key verification (5 attempts max before automatic lockout).
+- [x] Isolated in-browser viewer for authorized documents without account leakage.
+- [x] Server-enforced download gating (`can_download`).
+- [x] Expired / Revoked pass error states with clean security diagnostics.
+- [x] Session destruction on explicit departure (`/leave/`).
+- [x] 14 automated unit tests created and verified in `tests/unit/test_phase5.py`.
 
 ---
 

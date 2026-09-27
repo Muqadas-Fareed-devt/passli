@@ -85,3 +85,38 @@ class SharePassCreateForm(forms.ModelForm):
         elif expires_choice == '1time':
             return now + timedelta(minutes=30), 1
         return now + timedelta(minutes=30), 0
+
+
+class RecipientKeyVerificationForm(forms.Form):
+    """
+    Form for recipient Share Key authentication.
+    Normalizes input (removes spaces, hyphens, and standardizes to uppercase).
+    """
+    access_key = forms.CharField(
+        max_length=20,
+        min_length=8,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'class': 'form-input font-mono-data key-input-display',
+            'placeholder': '••••-••••',
+            'autocomplete': 'off',
+            'autocorrect': 'off',
+            'autocapitalize': 'characters',
+            'spellcheck': 'false',
+            'maxlength': '9',
+            'data-testid': 'recipient-key-input',
+            'autofocus': True,
+        }),
+        error_messages={
+            'required': 'Please enter the 8-character Share Key provided by the vault owner.',
+        }
+    )
+
+    def clean_access_key(self):
+        raw_key = self.cleaned_data.get('access_key', '').strip()
+        # Normalize: remove dashes, whitespace, and convert to uppercase
+        clean_key = raw_key.replace('-', '').replace(' ', '').upper()
+        if len(clean_key) != 8 or not clean_key.isalnum():
+            raise forms.ValidationError("Share Key must be exactly 8 alphanumeric characters (e.g., A1B2-C3D4).")
+        return clean_key
+

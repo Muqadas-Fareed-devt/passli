@@ -1787,4 +1787,42 @@ a {
   white-space: nowrap;
 }
 
+/* Recipient Key Verification & Portal Styling */
+.key-input-display {
+  font-size: 1.4rem !important;
+  font-weight: 800 !important;
+  text-align: center !important;
+  letter-spacing: 0.25em !important;
+  height: 54px !important;
+  text-transform: uppercase !important;
+  background-color: #f8fafc !important;
+  border: 2px solid var(--border-light) !important;
+  border-radius: var(--radius-md) !important;
+  transition: all 0.2s ease !important;
+}
+
+.key-input-display:focus {
+  border-color: var(--brand-emerald) !important;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15) !important;
+  background-color: #fff !important;
+}
+
+.recipient-doc-item:hover {
+  border-color: var(--border-medium) !important;
+  background-color: #f8fafc !important;
+}
+
+.recipient-doc-item.active {
+  border-color: var(--brand-navy) !important;
+  background-color: #f1f5f9 !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+@media (max-width: 860px) {
+  .recipient-portal-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+
 
