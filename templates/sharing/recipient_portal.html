@@ -46,12 +46,12 @@
         </div>
 
         <!-- Main Recipient Portal Grid -->
-        <div class="recipient-portal-grid" style="display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; align-items: start;">
+        <div class="recipient-portal-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; align-items: start;">
             
             <!-- Left Sidebar: Document Index -->
             <div class="recipient-doc-list" style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 1.25rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);">
                 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-light);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-light); flex-wrap: wrap; gap: 0.5rem;">
                     <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
                         Authorized Files ({{ documents|length }})
                     </span>
@@ -100,12 +100,12 @@
                     
                     <!-- Viewer Header -->
                     <div style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; background: #fafafa;">
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <span class="material-symbols-outlined" style="font-size: 20px; color: var(--brand-navy);">{{ active_doc.category_icon }}</span>
-                            <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary);" data-testid="active-doc-title">{{ active_doc.title }}</span>
+                        <div style="display: flex; align-items: center; gap: 0.5rem; min-width: 0;">
+                            <span class="material-symbols-outlined" style="font-size: 20px; color: var(--brand-navy); flex-shrink: 0;">{{ active_doc.category_icon }}</span>
+                            <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); word-break: break-word;" data-testid="active-doc-title">{{ active_doc.title }}</span>
                         </div>
                         
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
                             {% if can_download %}
                             <a href="{% url 'recipient_doc_download' pass.id active_doc.id %}" class="btn btn-primary btn-sm" data-testid="recipient-download-btn">
                                 <span class="material-symbols-outlined" style="font-size: 15px;">download</span>
@@ -121,12 +121,12 @@
                     </div>
 
                     <!-- Viewer Content -->
-                    <div style="min-height: 520px; background: #0f172a; display: flex; align-items: center; justify-content: center; position: relative;">
+                    <div style="min-height: 420px; background: #0f172a; display: flex; align-items: center; justify-content: center; position: relative;">
                         {% if active_doc.is_pdf %}
-                            <iframe src="{% url 'recipient_doc_preview' pass.id active_doc.id %}#toolbar=0" style="width: 100%; height: 600px; border: none; background: #fff;" title="{{ active_doc.title }}" data-testid="recipient-pdf-frame"></iframe>
+                            <iframe src="{% url 'recipient_doc_preview' pass.id active_doc.id %}#toolbar=0" style="width: 100%; height: 550px; min-height: 380px; border: none; background: #fff;" title="{{ active_doc.title }}" data-testid="recipient-pdf-frame"></iframe>
                         {% elif active_doc.is_image %}
-                            <div style="padding: 1.5rem; text-align: center; max-height: 600px; overflow: auto; width: 100%;">
-                                <img src="{% url 'recipient_doc_preview' pass.id active_doc.id %}" alt="{{ active_doc.title }}" style="max-width: 100%; max-height: 540px; border-radius: var(--radius-sm); box-shadow: 0 10px 25px rgba(0,0,0,0.3); object-fit: contain;" data-testid="recipient-img-preview">
+                            <div style="padding: 1.5rem; text-align: center; max-height: 550px; overflow: auto; width: 100%;">
+                                <img src="{% url 'recipient_doc_preview' pass.id active_doc.id %}" alt="{{ active_doc.title }}" style="max-width: 100%; max-height: 500px; border-radius: var(--radius-sm); box-shadow: 0 10px 25px rgba(0,0,0,0.3); object-fit: contain;" data-testid="recipient-img-preview">
                             </div>
                         {% else %}
                             <div style="text-align: center; padding: 3rem 1.5rem; color: #fff;">
