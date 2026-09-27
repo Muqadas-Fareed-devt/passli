@@ -53,11 +53,11 @@
     </div>
 
     <!-- Main Grid: QR Code + Key Details -->
-    <div style="display: grid; grid-template-columns: 320px 1fr; gap: 1.5rem; margin-bottom: 2rem;" data-testid="share-pass-card">
+    <div class="share-detail-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;" data-testid="share-pass-card">
         <!-- Column 1: Dynamic QR Code Card -->
         <div class="card" style="padding: 1.5rem; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg-surface);">
-            <div style="background: #ffffff; padding: 1rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin-bottom: 1rem; position: relative;">
-                <img src="{{ qr_data_uri }}" alt="Passli Share Pass QR Code" style="width: 220px; height: 220px; display: block;" data-testid="qr-code-img">
+            <div style="background: #ffffff; padding: 1rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin-bottom: 1rem; position: relative; max-width: 100%;">
+                <img src="{{ qr_data_uri }}" alt="Passli Share Pass QR Code" style="max-width: 100%; width: 220px; height: auto; aspect-ratio: 1/1; display: block;" data-testid="qr-code-img">
                 {% if pass.is_revoked or pass.is_expired %}
                     <div style="position: absolute; inset: 0; background: rgba(9, 13, 22, 0.85); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #ffffff; padding: 1rem;">
                         <span class="material-symbols-outlined" style="font-size: 36px; color: #f87171; margin-bottom: 0.25rem;">
@@ -81,7 +81,7 @@
         <div style="display: flex; flex-direction: column; gap: 1.25rem;">
             <!-- Ephemeral Key Card -->
             <div class="card" style="padding: 1.5rem; background: var(--bg-surface); border: 1px solid var(--border-color);">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
                     <span style="font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">
                         Access Share Key
                     </span>
@@ -94,9 +94,9 @@
 
                 {% if raw_key %}
                     <!-- Plaintext Key Display with Copy Button -->
-                    <div style="display: flex; align-items: center; gap: 0.75rem; background: var(--bg-card); padding: 0.85rem 1.25rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 0.75rem;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; background: var(--bg-card); padding: 0.85rem 1.25rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 0.75rem; flex-wrap: wrap;">
                         <span class="material-symbols-outlined" style="color: var(--color-primary); font-size: 24px;">key</span>
-                        <span id="shareKeyText" class="font-mono-data" style="font-size: 1.6rem; font-weight: 700; letter-spacing: 0.15em; color: #38bdf8; flex: 1;" data-testid="share-key-display">
+                        <span id="shareKeyText" class="font-mono-data" style="font-size: clamp(1.2rem, 3vw, 1.6rem); font-weight: 700; letter-spacing: 0.15em; color: #38bdf8; flex: 1; min-width: 140px;" data-testid="share-key-display">
                             {{ raw_key }}
                         </span>
                         <button type="button" class="btn btn-secondary btn-sm" id="copyKeyBtn" onclick="copyShareKey()" data-testid="copy-share-key">
@@ -110,9 +110,9 @@
                     </p>
                 {% else %}
                     <!-- Hidden Key Mask -->
-                    <div style="display: flex; align-items: center; gap: 0.75rem; background: var(--bg-card); padding: 0.85rem 1.25rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 0.5rem;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; background: var(--bg-card); padding: 0.85rem 1.25rem; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 0.5rem; flex-wrap: wrap;">
                         <span class="material-symbols-outlined" style="color: var(--text-muted); font-size: 24px;">lock</span>
-                        <span class="font-mono-data" style="font-size: 1.3rem; font-weight: 600; letter-spacing: 0.15em; color: var(--text-muted); flex: 1;" data-testid="share-key-masked">
+                        <span class="font-mono-data" style="font-size: clamp(1.1rem, 2.5vw, 1.3rem); font-weight: 600; letter-spacing: 0.1em; color: var(--text-muted); flex: 1; min-width: 140px;" data-testid="share-key-masked">
                             ••••-•••• (PBKDF2 Hash)
                         </span>
                     </div>
@@ -124,7 +124,7 @@
 
             <!-- Parameters & Expiration Grid -->
             <div class="card" style="padding: 1.25rem 1.5rem; background: var(--bg-surface); border: 1px solid var(--border-color);">
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem;">
                     <!-- Expiration -->
                     <div>
                         <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.25rem;">Expiration</div>
