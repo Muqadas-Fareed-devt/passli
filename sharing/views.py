@@ -134,6 +134,15 @@ def share_revoke_view(request, pass_id):
     share_pass = get_object_or_404(SharePass, id=pass_id, owner=request.user)
     share_pass.revoke()
 
+    from audit.models import ShareAccessLog, log_share_event
+    log_share_event(
+        share_pass,
+        ShareAccessLog.EventType.PASS_REVOKED,
+        request=request,
+        status=ShareAccessLog.Status.REVOKED,
+        details=f"Revoked by owner ({request.user.username})"
+    )
+
     messages.warning(
         request,
         f"Share Pass '{share_pass.title or str(share_pass.id)[:8]}' was immediately revoked. Access is blocked."

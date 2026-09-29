@@ -72,6 +72,12 @@
                                 <span>Share Passes</span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{% url 'audit:audit_list' %}" class="nav-link" data-testid="nav-audit">
+                                <span class="material-symbols-outlined" style="font-size: 17px;">receipt_long</span>
+                                <span>Audit Trail</span>
+                            </a>
+                        </li>
                     </ul>
                 {% else %}
                     <ul class="nav-links public-nav-links">
@@ -145,6 +151,12 @@
                             <a href="{% url 'share_list' %}" class="mobile-nav-link">
                                 <span class="material-symbols-outlined">qr_code_2</span>
                                 <span>Share Passes</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'audit:audit_list' %}" class="mobile-nav-link">
+                                <span class="material-symbols-outlined">receipt_long</span>
+                                <span>Security Audit Trail</span>
                             </a>
                         </li>
                     </ul>

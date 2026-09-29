@@ -1,7 +1,8 @@
 from django.urls import path
+from . import views
 
 app_name = 'audit'
 
 urlpatterns = [
-    # Audit log routes will be added in Phase 8
+    path('', views.audit_list_view, name='audit_list'),
 ]

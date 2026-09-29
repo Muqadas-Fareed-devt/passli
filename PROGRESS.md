@@ -1,6 +1,6 @@
 # Passli Development Progress & Roadmap
 
-> **Current Milestone**: Phases 1-4 & Security Audit Suite Completed & Verified (65/65 Automated Tests Passing)  
+> **Current Milestone**: Phases 1-6 & Security Audit Suite Completed & Verified (92/92 Automated Tests Passing)  
 > **Repository**: [github.com/Ali-Nawaz-devt/passli](https://github.com/Ali-Nawaz-devt/passli)  
 > **Status**: Active Development
 
@@ -16,7 +16,7 @@
 | **Security Audit** | OWASP Top 10, IDOR Prevention, Upload Defense & Checksum Integrity | :white_check_mark: Completed | 100% (10/10 Tests) |
 | **Phase 4** | Controlled Share Pass Generation & Ephemeral QR Protocol | :white_check_mark: Completed | 100% (16/16 Tests) |
 | **Phase 5** | Recipient Verification Portal & Two-Factor Access Flow | :white_check_mark: Completed | 100% (14/14 Tests) |
-| **Phase 6** | Audit Trail, Immediate Revocation & Rate Limiting | :hourglass_flowing_sand: Up Next | Planned |
+| **Phase 6** | Audit Trail, Immediate Revocation & Rate Limiting | :white_check_mark: Completed | 100% (13/13 Tests) |
 | **Phase 7** | End-to-End Selenium Test Suite, CI Automation & Production Polish | :calendar: Scheduled | Planned |
 
 ---
@@ -101,11 +101,14 @@
 
 ---
 
-### 📅 Phase 6: Audit Trail, Immediate Revocation & Rate Limiting
-- [ ] Structured audit logging (`ShareAccessLog`) tracking timestamp, IP, user-agent, key attempt, and outcome.
-- [ ] 1-click immediate pass revocation from owner dashboard.
-- [ ] Automatic background cleanup for expired passes and temporary storage buffers.
-- [ ] Defensive security headers (CSP, HSTS, X-Content-Type-Options, X-Frame-Options).
+### ✅ Phase 6: Audit Trail, Immediate Revocation & Rate Limiting
+- [x] Structured immutable audit logging (`ShareAccessLog`) tracking timestamp, IP, user-agent, key attempt, event type, and outcome.
+- [x] Automated audit logging triggers across recipient key verification, preview streaming, downloads, session exits, and lockouts.
+- [x] Owner Security Audit Dashboard (`/audit/`) with metric counters, multi-attribute filter toolbar, keyword search, and pagination.
+- [x] Strict IDOR isolation ensuring users only see audit trails for passes they own.
+- [x] 1-click immediate pass revocation from owner dashboard & pass details.
+- [x] Rate limiting brute-force defense with structured lockout auditing.
+- [x] 13 automated unit tests created and verified in `tests/unit/test_phase6.py`.
 
 ---
 
@@ -120,8 +123,8 @@
 ## 🛠️ Automated Verification Log
 
 ```text
-Test Suite: test_phase1.py, test_phase2.py, test_phase3.py, test_security.py, test_phase4.py
-Status: 65 Passed, 0 Failed, 0 Skipped
-Ran: 65 tests
+Test Suite: test_phase1.py, test_phase2.py, test_phase3.py, test_security.py, test_phase4.py, test_phase5.py, test_phase6.py
+Status: 92 Passed, 0 Failed, 0 Skipped
+Ran: 92 tests
 Result: OK
 ```

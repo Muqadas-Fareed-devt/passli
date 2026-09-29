@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.utils import timezone
 from .models import SharePass
 from .forms import RecipientKeyVerificationForm
+from audit.models import ShareAccessLog, log_share_event
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +38,13 @@ def recipient_verify_view(request, pass_id):
     # 1. Check owner revocation
     if share_pass.is_revoked:
         request.session.pop(auth_key, None)
+        log_share_event(
+            share_pass,
+            ShareAccessLog.EventType.PASS_REVOKED,
+            request=request,
+            status=ShareAccessLog.Status.REVOKED,
+            details='Access attempt on revoked pass'
+        )
         return render(request, 'sharing/recipient_error.html', {
             'pass': share_pass,
             'status': 'revoked',
@@ -47,6 +55,13 @@ def recipient_verify_view(request, pass_id):
     # 2. Check time expiration
     if share_pass.is_expired():
         request.session.pop(auth_key, None)
+        log_share_event(
+            share_pass,
+            ShareAccessLog.EventType.PASS_EXPIRED,
+            request=request,
+            status=ShareAccessLog.Status.EXPIRED,
+            details='Access attempt on expired pass'
+        )
         return render(request, 'sharing/recipient_error.html', {
             'pass': share_pass,
             'status': 'expired',
@@ -56,6 +71,13 @@ def recipient_verify_view(request, pass_id):
 
     # 3. Check single-use / usage limit
     if share_pass.is_limit_reached() and not request.session.get(auth_key):
+        log_share_event(
+            share_pass,
+            ShareAccessLog.EventType.RATE_LOCKED,
+            request=request,
+            status=ShareAccessLog.Status.LOCKED,
+            details=f'Usage limit reached ({share_pass.access_count}/{share_pass.max_uses})'
+        )
         return render(request, 'sharing/recipient_error.html', {
             'pass': share_pass,
             'status': 'limit_reached',
@@ -66,6 +88,13 @@ def recipient_verify_view(request, pass_id):
     # 4. Check brute-force lockout
     failures = request.session.get(fail_key, 0)
     if failures >= MAX_FAILED_ATTEMPTS:
+        log_share_event(
+            share_pass,
+            ShareAccessLog.EventType.RATE_LOCKED,
+            request=request,
+            status=ShareAccessLog.Status.LOCKED,
+            details=f'Brute-force limit reached ({failures}/{MAX_FAILED_ATTEMPTS})'
+        )
         return render(request, 'sharing/recipient_error.html', {
             'pass': share_pass,
             'status': 'locked',
@@ -93,13 +122,36 @@ def recipient_verify_view(request, pass_id):
                 share_pass.access_count += 1
                 share_pass.save(update_fields=['access_count', 'updated_at'])
 
+                log_share_event(
+                    share_pass,
+                    ShareAccessLog.EventType.KEY_SUCCESS,
+                    request=request,
+                    status=ShareAccessLog.Status.SUCCESS,
+                    details='Share Key successfully verified'
+                )
+
                 return redirect('recipient_portal', pass_id=share_pass.id)
             else:
                 failures += 1
                 request.session[fail_key] = failures
                 remaining_attempts = max(0, MAX_FAILED_ATTEMPTS - failures)
 
+                log_share_event(
+                    share_pass,
+                    ShareAccessLog.EventType.KEY_FAILED,
+                    request=request,
+                    status=ShareAccessLog.Status.DENIED,
+                    details=f'Invalid key submitted ({failures}/{MAX_FAILED_ATTEMPTS})'
+                )
+
                 if failures >= MAX_FAILED_ATTEMPTS:
+                    log_share_event(
+                        share_pass,
+                        ShareAccessLog.EventType.RATE_LOCKED,
+                        request=request,
+                        status=ShareAccessLog.Status.LOCKED,
+                        details='Maximum invalid key attempts reached'
+                    )
                     return render(request, 'sharing/recipient_error.html', {
                         'pass': share_pass,
                         'status': 'locked',
@@ -111,6 +163,33 @@ def recipient_verify_view(request, pass_id):
                     'access_key',
                     f"Invalid Share Key. {remaining_attempts} attempt(s) remaining before security lockout."
                 )
+        else:
+            failures += 1
+            request.session[fail_key] = failures
+            remaining_attempts = max(0, MAX_FAILED_ATTEMPTS - failures)
+
+            log_share_event(
+                share_pass,
+                ShareAccessLog.EventType.KEY_FAILED,
+                request=request,
+                status=ShareAccessLog.Status.DENIED,
+                details=f'Invalid key format submitted ({failures}/{MAX_FAILED_ATTEMPTS})'
+            )
+
+            if failures >= MAX_FAILED_ATTEMPTS:
+                log_share_event(
+                    share_pass,
+                    ShareAccessLog.EventType.RATE_LOCKED,
+                    request=request,
+                    status=ShareAccessLog.Status.LOCKED,
+                    details='Maximum invalid key attempts reached'
+                )
+                return render(request, 'sharing/recipient_error.html', {
+                    'pass': share_pass,
+                    'status': 'locked',
+                    'title': 'Access Temporarily Locked',
+                    'error_message': f'Maximum invalid attempts reached ({failures}/{MAX_FAILED_ATTEMPTS}). Access is locked.',
+                }, status=429)
     else:
         form = RecipientKeyVerificationForm()
 
@@ -214,6 +293,15 @@ def recipient_doc_preview_view(request, pass_id, doc_id):
     ext = os.path.splitext(doc.file.name)[1]
     filename = doc.original_filename or f"{doc.title}{ext}"
 
+    log_share_event(
+        share_pass,
+        ShareAccessLog.EventType.VIEW_DOC,
+        request=request,
+        document=doc,
+        status=ShareAccessLog.Status.SUCCESS,
+        details=f"Preview stream: {doc.title}"
+    )
+
     response = FileResponse(
         file_obj,
         as_attachment=False,
@@ -254,6 +342,15 @@ def recipient_doc_download_view(request, pass_id, doc_id):
     ext = os.path.splitext(doc.file.name)[1]
     download_filename = doc.original_filename or f"{doc.title}{ext}"
 
+    log_share_event(
+        share_pass,
+        ShareAccessLog.EventType.DOWNLOAD_DOC,
+        request=request,
+        document=doc,
+        status=ShareAccessLog.Status.SUCCESS,
+        details=f"Downloaded: {doc.title}"
+    )
+
     response = FileResponse(
         file_obj,
         as_attachment=True,
@@ -271,9 +368,18 @@ def recipient_leave_view(request, pass_id):
     auth_key = _session_auth_key(pass_id)
     request.session.pop(auth_key, None)
 
+    log_share_event(
+        share_pass,
+        ShareAccessLog.EventType.SESSION_LEFT,
+        request=request,
+        status=ShareAccessLog.Status.SUCCESS,
+        details="Recipient voluntarily ended session"
+    )
+
     return render(request, 'sharing/recipient_error.html', {
         'pass': share_pass,
         'status': 'left',
         'title': 'Session Securely Closed',
         'error_message': 'You have successfully exited this document inspection session. All in-browser decrypted session references have been cleared.',
     })
+
