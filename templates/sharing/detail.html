@@ -36,7 +36,7 @@
             </div>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
             <a href="{% url 'share_list' %}" class="btn btn-secondary btn-sm" data-testid="back-to-passes">
                 <span class="material-symbols-outlined" style="font-size: 16px;">list</span> All Passes
             </a>
@@ -53,7 +53,7 @@
     </div>
 
     <!-- Main Grid: QR Code + Key Details -->
-    <div class="share-detail-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;" data-testid="share-pass-card">
+    <div class="share-detail-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 1.5rem; margin-bottom: 2rem;" data-testid="share-pass-card">
         <!-- Column 1: Dynamic QR Code Card -->
         <div class="card" style="padding: 1.5rem; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--bg-surface);">
             <div style="background: #ffffff; padding: 1rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin-bottom: 1rem; position: relative; max-width: 100%;">
@@ -187,7 +187,7 @@
 
         <div style="display: flex; flex-direction: column; gap: 0.6rem;">
             {% for doc in documents %}
-                <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border-color); gap: 1rem;" data-testid="pass-doc-item-{{ doc.id }}">
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border-color); gap: 1rem; flex-wrap: wrap;" data-testid="pass-doc-item-{{ doc.id }}">
                     <div style="display: flex; align-items: center; gap: 0.75rem; min-width: 0;">
                         <div style="width: 36px; height: 36px; border-radius: 6px; background: rgba(99, 102, 241, 0.1); color: var(--color-primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                             {% if doc.is_pdf %}
