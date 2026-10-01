@@ -1,66 +1,59 @@
-# Security Policy
+# Security Policy & Cryptographic Architecture
 
-Passli is engineered with privacy and cryptographic security as core design tenets. We take all vulnerability reports seriously and appreciate responsible disclosure.
-
----
-
-## Supported Versions
-
-Security updates are actively maintained for the following branches and releases:
-
-| Version | Supported          | Security Patches |
-| ------- | ------------------ | ---------------- |
-| `main`  | :white_check_mark: | Active           |
-| `< 1.0` | :white_check_mark: | Development      |
+Passli is engineered with a strict privacy-first, zero-knowledge security posture designed for controlled document sharing without credential exposure.
 
 ---
 
-## Cryptographic Architecture & Threat Model
+## 🛡️ Supported Versions
 
-Passli implements a defensive zero-knowledge architecture for sensitive document sharing:
+We actively support and release security updates for the following versions of Passli:
 
-1. **Client-Side Envelope Encryption**:
-   - Files are encrypted on the client or in transit using AES-256-GCM / XChaCha20-Poly1305 before permanent storage.
-   - Master account credentials are never shared with pass recipients.
-2. **Ephemeral Share Keys**:
-   - Share passes are protected by short-lived, randomly generated 8-character access keys.
-   - Key hashes are validated server-side; raw keys are held strictly in recipient memory.
-3. **Server-Enforced Expiration & Immediate Revocation**:
-   - Time-to-live (TTL) counters are enforced by the server backend.
-   - Once expired or manually revoked by the vault owner, access is permanently blocked and cryptographic keys are sanitized.
-4. **Brute-Force & Rate Limiting**:
-   - Ephemeral pass endpoints enforce strict rate limits on failed key attempts to eliminate brute-force attack vectors.
-5. **Auditing & Immutable Access Logs**:
-   - Every verification attempt, document access, and revocation is recorded in structured audit logs with timestamps and client metadata.
+| Version | Supported | Security Maintenance |
+| :--- | :--- | :--- |
+| `1.x.x` (Current Main) | :white_check_mark: | Active Security Patches |
+| `< 1.0.0` | :x: | Deprecated |
 
 ---
 
-## Reporting a Vulnerability
+## 🔒 Cryptographic Specifications & Threat Model
 
-If you discover a potential security vulnerability in Passli, please **do not** file a public GitHub issue.
+1. **Zero-Knowledge Key Storage**:
+   - Plaintext 8-character Share Keys (`XXXX-XXXX`) are generated dynamically using cryptographically secure random sources (`secrets.choice`).
+   - Plaintext keys are **never stored** in the database or written to disk logs.
+   - Keys are hashed with salted **PBKDF2-HMAC-SHA256** (`django.contrib.auth.hashers.make_password`).
 
-### Reporting Procedure
+2. **Binary Digest Integrity**:
+   - Every uploaded vault document is processed through **SHA-256** checksum hashing on ingestion.
+   - Binary digests allow instant verification of document integrity and detect unauthorized alteration.
 
-1. Send an email to **security@passli.dev** (or open a Private Vulnerability Report on GitHub).
+3. **Multi-Tenant IDOR Protection**:
+   - All vault access handlers strictly filter by `user=request.user` or authenticated session ID before serving document contents.
+   - Direct object reference tampering is caught at the view boundary with HTTP 404/403 responses.
+
+4. **Brute-Force & Rate-Limiting Defenses**:
+   - Failed Share Key attempts trigger structured security logs and increment attempt counters.
+   - Excess attempts enforce exponential lockouts to defeat automated credential stuffing and key enumeration.
+
+5. **Server-Enforced Expiration & Revocation**:
+   - Expiration timestamps (`expires_at`) are validated on every recipient request.
+   - When a pass expires or is revoked, access is immediately terminated, and session memory is wiped.
+
+---
+
+## 🚨 Reporting a Vulnerability
+
+If you discover a potential security vulnerability within Passli, please **do not open a public issue**. Instead, follow our responsible disclosure procedure:
+
+1. Send an email with full reproduction steps to: **`security@passli.dev`**
 2. Include the following details in your report:
-   - Type of vulnerability (e.g., IDOR, XSS, CSRF, cryptographic weakness, bypass).
-   - Step-by-step instructions or Proof of Concept (PoC) to reproduce the issue.
-   - Affected files, endpoints, or components.
-   - Potential impact of exploitation.
-3. We will acknowledge receipt of your report within **24 hours** and provide regular progress updates as we triage and patch the issue.
+   - Description of the vulnerability and its potential impact.
+   - Step-by-step instructions or proof-of-concept (PoC) code.
+   - Affected URLs, endpoints, or parameters.
+   - Suggestions for mitigation or fix (optional).
 
-### Responsible Disclosure Guidelines
+### Response Timeline
+- **Initial Acknowledgment**: Within 24 hours.
+- **Vulnerability Assessment**: Within 48 hours.
+- **Patch & Release**: Within 7 business days for critical vulnerabilities.
 
-- Please allow us reasonable time to investigate and release a fix before disclosing any information publicly.
-- Do not attempt to access, modify, or destroy user data during testing.
-- Do not execute denial-of-service (DoS/DDoS) attacks against production infrastructure.
-
----
-
-## Security Best Practices for Self-Hosting
-
-When deploying Passli in production environments:
-- Always set `DEBUG=False` in your `.env` configuration.
-- Generate a cryptographically secure `SECRET_KEY` using `python -c 'import secrets; print(secrets.token_urlsafe(50))'`.
-- Enforce HTTPS / TLS 1.3 across all incoming traffic.
-- Configure secure session cookies (`SESSION_COOKIE_SECURE = True`, `CSRF_COOKIE_SECURE = True`, `SECURE_HSTS_SECONDS = 31536000`).
+We credit all responsible security researchers in our release notes and Hall of Fame.
