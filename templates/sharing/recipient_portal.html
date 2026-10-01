@@ -45,11 +45,30 @@
             </div>
         </div>
 
+        <!-- Mobile Document Switcher (Visible on Mobile/Tablet when pass contains multiple docs) -->
+        {% if documents|length > 1 %}
+        <div class="recipient-mobile-doc-nav">
+            <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem; letter-spacing: 0.05em;">
+                Select Shared Document ({{ documents|length }})
+            </div>
+            <div class="recipient-mobile-chips-wrapper">
+                {% for doc in documents %}
+                <a href="?doc={{ doc.id }}" class="recipient-mobile-doc-chip {% if doc.id == active_doc.id %}active{% endif %}">
+                    <span class="material-symbols-outlined" style="font-size: 16px; color: {% if doc.id == active_doc.id %}#ffffff{% else %}var(--brand-navy){% endif %};">
+                        {{ doc.category_icon }}
+                    </span>
+                    <span>{{ doc.title|truncatechars:22 }}</span>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
         <!-- Main Recipient Portal Grid -->
-        <div class="recipient-portal-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; align-items: start;">
+        <div class="recipient-portal-layout">
             
-            <!-- Left Sidebar: Document Index -->
-            <div class="recipient-doc-list" style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 1.25rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);">
+            <!-- Left Sidebar: Document Index (Desktop Only) -->
+            <div class="recipient-doc-list recipient-desktop-sidebar" style="background: var(--bg-surface); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 1.25rem; box-shadow: var(--shadow-sm);">
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-light); flex-wrap: wrap; gap: 0.5rem;">
                     <span style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
@@ -93,13 +112,13 @@
             </div>
 
             <!-- Right Panel: Active Document Viewer & Cryptographic Metadata -->
-            <div class="recipient-preview-panel" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div class="recipient-preview-panel" style="display: flex; flex-direction: column; gap: 1.25rem; min-width: 0; width: 100%;">
                 
                 <!-- Main Viewer Box -->
-                <div style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);">
+                <div class="recipient-viewer-container">
                     
                     <!-- Viewer Header -->
-                    <div style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; background: #fafafa;">
+                    <div class="recipient-viewer-header">
                         <div style="display: flex; align-items: center; gap: 0.5rem; min-width: 0;">
                             <span class="material-symbols-outlined" style="font-size: 20px; color: var(--brand-navy); flex-shrink: 0;">{{ active_doc.category_icon }}</span>
                             <span style="font-weight: 700; font-size: 0.95rem; color: var(--text-primary); word-break: break-word;" data-testid="active-doc-title">{{ active_doc.title }}</span>
@@ -121,15 +140,15 @@
                     </div>
 
                     <!-- Viewer Content -->
-                    <div style="min-height: 420px; background: #0f172a; display: flex; align-items: center; justify-content: center; position: relative;">
+                    <div class="recipient-viewer-canvas">
                         {% if active_doc.is_pdf %}
-                            <iframe src="{% url 'recipient_doc_preview' pass.id active_doc.id %}#toolbar=0" style="width: 100%; height: 550px; min-height: 380px; border: none; background: #fff;" title="{{ active_doc.title }}" data-testid="recipient-pdf-frame"></iframe>
+                            <iframe src="{% url 'recipient_doc_preview' pass.id active_doc.id %}#toolbar=0" class="recipient-pdf-frame" title="{{ active_doc.title }}" data-testid="recipient-pdf-frame"></iframe>
                         {% elif active_doc.is_image %}
-                            <div style="padding: 1.5rem; text-align: center; max-height: 550px; overflow: auto; width: 100%;">
-                                <img src="{% url 'recipient_doc_preview' pass.id active_doc.id %}" alt="{{ active_doc.title }}" style="max-width: 100%; max-height: 500px; border-radius: var(--radius-sm); box-shadow: 0 10px 25px rgba(0,0,0,0.3); object-fit: contain;" data-testid="recipient-img-preview">
+                            <div class="recipient-img-container">
+                                <img src="{% url 'recipient_doc_preview' pass.id active_doc.id %}" alt="{{ active_doc.title }}" class="recipient-img-preview" data-testid="recipient-img-preview">
                             </div>
                         {% else %}
-                            <div style="text-align: center; padding: 3rem 1.5rem; color: #fff;">
+                            <div style="text-align: center; padding: 2.5rem 1.25rem; color: #fff;">
                                 <span class="material-symbols-outlined" style="font-size: 48px; color: #94a3b8;">draft</span>
                                 <h3 style="font-size: 1.1rem; margin: 0.75rem 0 0.25rem;">Binary File Payload</h3>
                                 <p style="font-size: 0.85rem; color: #94a3b8; max-width: 400px; margin: 0 auto 1.25rem;">
@@ -147,8 +166,8 @@
                 </div>
 
                 <!-- Cryptographic Metadata Card -->
-                <div style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-light);">
+                <div style="background: var(--bg-surface); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; box-shadow: var(--shadow-sm);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-light); flex-wrap: wrap; gap: 0.5rem;">
                         <span class="font-mono-data" style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
                             Cryptographic Integrity & Metadata
                         </span>
@@ -157,7 +176,7 @@
                         </span>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.8rem;">
+                    <div class="recipient-metadata-grid">
                         <div>
                             <div style="color: var(--text-muted); font-size: 0.7rem; font-weight: 600; text-transform: uppercase;">Original Filename</div>
                             <div class="font-mono-data" style="font-weight: 600; color: var(--text-primary); margin-top: 0.15rem; word-break: break-all;">
@@ -179,7 +198,7 @@
                     </div>
 
                     <div style="margin-top: 1rem; padding: 0.75rem; background: #f8fafc; border: 1px solid var(--border-light); border-radius: var(--radius-md);">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem; flex-wrap: wrap; gap: 0.25rem;">
                             <span class="font-mono-data" style="font-size: 0.65rem; font-weight: 700; color: var(--text-muted);">DIGEST HASH (SHA-256)</span>
                             <span class="font-mono-data" style="font-size: 0.65rem; color: var(--brand-emerald); font-weight: 600;">PASSLI IMMUTABLE</span>
                         </div>
