@@ -70,6 +70,8 @@ def documents_list_view(request):
 @login_required(login_url='login')
 def documents_upload_view(request):
     """Secure document upload handler."""
+    next_url = request.GET.get('next') or request.POST.get('next')
+
     if request.method == 'POST':
         form = DocumentUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -78,6 +80,8 @@ def documents_upload_view(request):
                 document.user = request.user
                 document.save()
                 messages.success(request, f"Document '{document.title}' encrypted and stored in your vault.")
+                if next_url == 'share_create':
+                    return redirect(f"{reverse('share_create')}?doc={document.pk}")
                 return redirect('document_detail', pk=document.pk)
             except Exception as e:
                 logger.error(f"Error saving uploaded document: {e}", exc_info=True)
@@ -87,7 +91,7 @@ def documents_upload_view(request):
         initial_category = request.GET.get('category', 'other')
         form = DocumentUploadForm(initial={'category': initial_category})
 
-    return render(request, 'documents/upload.html', {'form': form})
+    return render(request, 'documents/upload.html', {'form': form, 'next': next_url})
 
 
 @login_required(login_url='login')
