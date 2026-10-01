@@ -55,33 +55,33 @@
                 {% if user.is_authenticated %}
                     <ul class="nav-links auth-nav-links">
                         <li>
-                            <a href="{% url 'dashboard' %}" class="nav-link" data-testid="nav-dashboard">
+                            <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" data-testid="nav-dashboard">
                                 <span class="material-symbols-outlined" style="font-size: 17px;">dashboard</span>
                                 <span>Dashboard</span>
                             </a>
                         </li>
                         <li>
-                            <a href="{% url 'documents_list' %}" class="nav-link" data-testid="nav-documents">
+                            <a href="{% url 'documents_list' %}" class="nav-link {% if 'documents' in request.path %}active{% endif %}" data-testid="nav-documents">
                                 <span class="material-symbols-outlined" style="font-size: 17px;">folder</span>
                                 <span>Vault Records</span>
                             </a>
                         </li>
                         <li>
-                            <a href="{% url 'share_list' %}" class="nav-link" data-testid="nav-passes">
+                            <a href="{% url 'share_list' %}" class="nav-link {% if 'share' in request.path and 'p/' not in request.path %}active{% endif %}" data-testid="nav-passes">
                                 <span class="material-symbols-outlined" style="font-size: 17px;">qr_code_2</span>
                                 <span>Share Passes</span>
                             </a>
                         </li>
                         <li>
-                            <a href="{% url 'audit:audit_list' %}" class="nav-link" data-testid="nav-audit">
+                            <a href="{% url 'audit:audit_list' %}" class="nav-link {% if 'audit' in request.path and 'admin-dashboard' not in request.path %}active{% endif %}" data-testid="nav-audit">
                                 <span class="material-symbols-outlined" style="font-size: 17px;">receipt_long</span>
                                 <span>Audit Trail</span>
                             </a>
                         </li>
                         {% if user.is_staff %}
                         <li>
-                            <a href="{% url 'admin_dashboard_overview' %}" class="nav-link" data-testid="nav-admin" style="color: #6366f1;">
-                                <span class="material-symbols-outlined" style="font-size: 17px; color: #6366f1;">admin_panel_settings</span>
+                            <a href="{% url 'admin_dashboard_overview' %}" class="nav-link nav-link-admin {% if 'admin-dashboard' in request.path %}active{% endif %}" data-testid="nav-admin">
+                                <span class="material-symbols-outlined" style="font-size: 17px;">admin_panel_settings</span>
                                 <span>Admin Console</span>
                             </a>
                         </li>
