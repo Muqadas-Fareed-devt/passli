@@ -41,6 +41,9 @@
 
             <form method="post" enctype="multipart/form-data" class="auth-form" novalidate>
                 {% csrf_token %}
+                {% if next %}
+                    <input type="hidden" name="next" value="{{ next }}">
+                {% endif %}
 
                 <!-- File Dropzone -->
                 <div class="form-group">
