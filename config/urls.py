@@ -11,6 +11,7 @@ admin.site.index_title = "System Management & Storage Console"
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('accounts.urls')),
+    path('admin-dashboard/', include('accounts.admin_urls')),
     path('documents/', include('documents.urls')),
     path('share/', include('sharing.urls')),
     path('p/', include('sharing.recipient_urls')),

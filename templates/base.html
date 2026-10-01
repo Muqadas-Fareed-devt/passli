@@ -78,6 +78,14 @@
                                 <span>Audit Trail</span>
                             </a>
                         </li>
+                        {% if user.is_staff %}
+                        <li>
+                            <a href="{% url 'admin_dashboard_overview' %}" class="nav-link" data-testid="nav-admin" style="color: #6366f1;">
+                                <span class="material-symbols-outlined" style="font-size: 17px; color: #6366f1;">admin_panel_settings</span>
+                                <span>Admin Console</span>
+                            </a>
+                        </li>
+                        {% endif %}
                     </ul>
                 {% else %}
                     <ul class="nav-links public-nav-links">
@@ -159,6 +167,14 @@
                                 <span>Security Audit Trail</span>
                             </a>
                         </li>
+                        {% if user.is_staff %}
+                        <li>
+                            <a href="{% url 'admin_dashboard_overview' %}" class="mobile-nav-link" style="color: #6366f1;">
+                                <span class="material-symbols-outlined" style="color: #6366f1;">admin_panel_settings</span>
+                                <span>Admin Console</span>
+                            </a>
+                        </li>
+                        {% endif %}
                     </ul>
 
                     <div class="mobile-nav-actions">

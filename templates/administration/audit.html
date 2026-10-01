@@ -1,0 +1,179 @@
+{% extends "administration/base_admin.html" %}
+{% load static %}
+
+{% block admin_content %}
+<!-- Search & Filter Toolbar -->
+<div style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm);">
+    <form method="get" action="{% url 'admin_dashboard_audit' %}" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+        
+        <!-- Search Query -->
+        <div style="flex: 2; min-width: 200px;">
+            <label for="admin-audit-search" style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.3rem; text-transform: uppercase;">Search Threat Logs / IP</label>
+            <input type="text" name="q" id="admin-audit-search" value="{{ query }}" placeholder="IP address, user agent, owner, pass..." class="form-input" style="padding: 0.45rem 0.65rem; font-size: 0.85rem;">
+        </div>
+
+        <!-- Filter by Event Type -->
+        <div style="flex: 1; min-width: 160px;">
+            <label for="admin-event-filter" style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.3rem; text-transform: uppercase;">Event Type</label>
+            <select name="event" id="admin-event-filter" class="form-input" style="padding: 0.45rem 0.65rem; font-size: 0.85rem;" onchange="this.form.submit()">
+                <option value="">All Security Events</option>
+                {% for val, label in event_choices %}
+                    <option value="{{ val }}" {% if event_filter == val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Filter by Status -->
+        <div style="flex: 1; min-width: 140px;">
+            <label for="admin-status-filter" style="display: block; font-size: 0.7rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.3rem; text-transform: uppercase;">Outcome Status</label>
+            <select name="status" id="admin-status-filter" class="form-input" style="padding: 0.45rem 0.65rem; font-size: 0.85rem;" onchange="this.form.submit()">
+                <option value="">All Outcomes</option>
+                {% for val, label in status_choices %}
+                    <option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div style="display: flex; align-items: flex-end; padding-top: 1.25rem;">
+            <button type="submit" class="btn btn-primary btn-sm">
+                <span class="material-symbols-outlined" style="font-size: 16px;">search</span> Filter
+            </button>
+            {% if query or event_filter or status_filter %}
+            <a href="{% url 'admin_dashboard_audit' %}" class="btn btn-sm btn-secondary" style="color: #e11d48; margin-left: 0.4rem;" title="Reset filters">
+                <span class="material-symbols-outlined" style="font-size: 15px;">clear</span>
+            </a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<!-- Global Audit Table Card -->
+<div class="table-card" style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); overflow-x: auto; box-shadow: var(--shadow-sm); width: 100%;">
+    <table class="comp-table" style="min-width: 860px; width: 100%;" data-testid="admin-audit-table">
+        <thead>
+            <tr>
+                <th style="width: 16%;">Timestamp (UTC)</th>
+                <th style="width: 20%;">Security Event</th>
+                <th style="width: 10%;">Outcome</th>
+                <th style="width: 20%;">Pass & Owner</th>
+                <th style="width: 16%;">Target Record</th>
+                <th style="width: 18%;">IP & Network Agent</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr data-testid="admin-audit-row-{{ log.id }}">
+                <!-- Timestamp -->
+                <td class="font-mono-data" style="font-size: 0.75rem; color: var(--text-primary); font-weight: 600;">
+                    <div>{{ log.timestamp|date:"Y-m-d H:i:s" }}</div>
+                    <div style="font-size: 0.65rem; color: var(--text-muted); font-weight: normal;">{{ log.timestamp|timesince }} ago</div>
+                </td>
+
+                <!-- Security Event -->
+                <td>
+                    <div style="display: flex; align-items: center; gap: 0.4rem;">
+                        <span class="material-symbols-outlined" style="font-size: 16px; color: {% if log.status == 'success' %}var(--brand-emerald){% elif log.status == 'denied' %}#e11d48{% elif log.status == 'locked' %}#dc2626{% else %}var(--text-muted){% endif %};">
+                            {{ log.event_icon }}
+                        </span>
+                        <span style="font-weight: 700; font-size: 0.85rem; color: var(--text-primary);">
+                            {{ log.get_event_type_display }}
+                        </span>
+                    </div>
+                    {% if log.details %}
+                    <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.15rem;">
+                        {{ log.details }}
+                    </div>
+                    {% endif %}
+                </td>
+
+                <!-- Outcome Badge -->
+                <td>
+                    {% if log.status == 'success' %}
+                        <span class="status-badge font-mono-data" style="font-size: 0.65rem; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0;">SUCCESS</span>
+                    {% elif log.status == 'denied' %}
+                        <span class="status-badge font-mono-data" style="font-size: 0.65rem; background: #fff1f2; color: #be123c; border: 1px solid #fecdd3;">DENIED</span>
+                    {% elif log.status == 'locked' %}
+                        <span class="status-badge font-mono-data" style="font-size: 0.65rem; background: #fef2f2; color: #991b1b; border: 1px solid #fecaca;">LOCKED</span>
+                    {% elif log.status == 'expired' %}
+                        <span class="status-badge font-mono-data" style="font-size: 0.65rem; background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa;">EXPIRED</span>
+                    {% elif log.status == 'revoked' %}
+                        <span class="status-badge font-mono-data" style="font-size: 0.65rem; background: #fdf2f8; color: #9d174d; border: 1px solid #fbcfe8;">REVOKED</span>
+                    {% else %}
+                        <span class="font-mono-data" style="font-size: 0.65rem;">{{ log.status|upper }}</span>
+                    {% endif %}
+                </td>
+
+                <!-- Pass & Owner -->
+                <td>
+                    {% if log.share_pass %}
+                        <div style="display: flex; align-items: center; gap: 0.35rem;">
+                            <span class="font-mono-data" style="font-size: 0.75rem; background: #f1f5f9; padding: 0.1rem 0.35rem; border-radius: 4px; font-weight: 700;">
+                                #{{ log.share_pass.id|stringformat:"s"|slice:":8"|upper }}
+                            </span>
+                            <span style="font-weight: 600; font-size: 0.8rem; color: var(--text-primary);">
+                                {{ log.share_pass.title|default:"Untitled Pass" }}
+                            </span>
+                        </div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.1rem;">
+                            Owner: <strong>{{ log.share_pass.owner.username }}</strong>
+                        </div>
+                    {% else %}
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">Unlinked Pass</span>
+                    {% endif %}
+                </td>
+
+                <!-- Target Document -->
+                <td>
+                    {% if log.document %}
+                        <div style="font-weight: 600; font-size: 0.8rem; color: var(--text-primary);">
+                            {{ log.document.title }}
+                        </div>
+                        <div class="font-mono-data" style="font-size: 0.65rem; color: var(--text-muted);">
+                            {{ log.document.formatted_size }}
+                        </div>
+                    {% else %}
+                        <span style="font-size: 0.75rem; color: var(--text-dim); font-style: italic;">Envelope Root</span>
+                    {% endif %}
+                </td>
+
+                <!-- IP & Network Agent -->
+                <td>
+                    <div class="font-mono-data" style="font-size: 0.75rem; font-weight: 600; color: var(--text-primary);">
+                        {{ log.ip_address|default:"Unknown IP" }}
+                    </div>
+                    {% if log.user_agent %}
+                    <div style="font-size: 0.65rem; color: var(--text-muted); max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ log.user_agent }}">
+                        {{ log.user_agent }}
+                    </div>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+                    No security audit logs matched the search criteria.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination Controls -->
+{% if page_obj.has_other_pages %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div style="font-size: 0.8rem; color: var(--text-muted);">
+        Showing {{ page_obj.start_index }}–{{ page_obj.end_index }} of {{ total_count }} security logs
+    </div>
+    <div style="display: flex; gap: 0.4rem;">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if event_filter %}&event={{ event_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="btn btn-secondary btn-sm">Previous</a>
+        {% endif %}
+        <span class="btn btn-secondary btn-sm font-mono-data" style="cursor: default; background: var(--bg-card); font-weight: 700;">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if event_filter %}&event={{ event_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" class="btn btn-secondary btn-sm">Next</a>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+{% endblock %}

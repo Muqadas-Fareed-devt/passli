@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Admin Management Console — Passli Cryptographic Systems{% endblock %}
+
+{% block content %}
+<div class="vault-container" style="padding-bottom: 4rem;">
+    <div class="container">
+
+        <!-- Top Admin Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-light); padding-bottom: 1.25rem;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.25rem;">
+                    <a href="{% url 'dashboard' %}" style="color: var(--text-muted); text-decoration: none;">Vault</a>
+                    <span>/</span>
+                    <span style="color: var(--brand-navy); font-weight: 600;">System Administration</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                    <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--brand-navy); letter-spacing: -0.02em; margin: 0;">
+                        Platform Administration Console
+                    </h1>
+                    <span class="status-badge font-mono-data" style="font-size: 0.7rem; background: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe;">
+                        <span class="pulse-dot" style="background: #4338ca;"></span>
+                        <span>SUPERADMIN ROOT</span>
+                    </span>
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                <a href="{% url 'admin:index' %}" class="btn btn-secondary btn-sm" target="_blank" data-testid="to-django-admin">
+                    <span class="material-symbols-outlined" style="font-size: 16px;">settings</span> Django Backend Admin
+                </a>
+                <a href="{% url 'dashboard' %}" class="btn btn-primary btn-sm">
+                    <span class="material-symbols-outlined" style="font-size: 16px;">person</span> My Personal Vault
+                </a>
+            </div>
+        </div>
+
+        <!-- Admin Tab Navigation Toolbar -->
+        <div style="background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 0.5rem; margin-bottom: 1.75rem; box-shadow: var(--shadow-sm); overflow-x: auto;">
+            <nav style="display: flex; gap: 0.4rem; min-width: 600px;">
+                <a href="{% url 'admin_dashboard_overview' %}" 
+                   class="btn btn-sm {% if active_tab == 'overview' %}btn-primary{% else %}btn-secondary{% endif %}" 
+                   style="display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; border-radius: var(--radius-md);">
+                    <span class="material-symbols-outlined" style="font-size: 17px;">monitoring</span>
+                    <span>Platform Overview</span>
+                </a>
+
+                <a href="{% url 'admin_dashboard_users' %}" 
+                   class="btn btn-sm {% if active_tab == 'users' %}btn-primary{% else %}btn-secondary{% endif %}" 
+                   style="display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; border-radius: var(--radius-md);">
+                    <span class="material-symbols-outlined" style="font-size: 17px;">group</span>
+                    <span>User Accounts</span>
+                </a>
+
+                <a href="{% url 'admin_dashboard_documents' %}" 
+                   class="btn btn-sm {% if active_tab == 'documents' %}btn-primary{% else %}btn-secondary{% endif %}" 
+                   style="display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; border-radius: var(--radius-md);">
+                    <span class="material-symbols-outlined" style="font-size: 17px;">folder_managed</span>
+                    <span>Vault Storage & Files</span>
+                </a>
+
+                <a href="{% url 'admin_dashboard_passes' %}" 
+                   class="btn btn-sm {% if active_tab == 'passes' %}btn-primary{% else %}btn-secondary{% endif %}" 
+                   style="display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; border-radius: var(--radius-md);">
+                    <span class="material-symbols-outlined" style="font-size: 17px;">qr_code_2</span>
+                    <span>Share Pass Operations</span>
+                </a>
+
+                <a href="{% url 'admin_dashboard_audit' %}" 
+                   class="btn btn-sm {% if active_tab == 'audit' %}btn-primary{% else %}btn-secondary{% endif %}" 
+                   style="display: inline-flex; align-items: center; gap: 0.4rem; font-weight: 600; border-radius: var(--radius-md);">
+                    <span class="material-symbols-outlined" style="font-size: 17px;">security</span>
+                    <span>Global Audit & Threats</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Sub-View Content -->
+        {% block admin_content %}{% endblock %}
+
+    </div>
+</div>
+{% endblock %}
