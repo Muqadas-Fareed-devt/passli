@@ -129,6 +129,9 @@ def document_preview_view(request, pk):
         filename=filename,
         content_type=document.file_type or 'application/octet-stream'
     )
+    response['Cache-Control'] = 'no-store, no-cache, must-revalidate, private'
+    response['Pragma'] = 'no-cache'
+    response['X-Content-Type-Options'] = 'nosniff'
     return response
 
 
@@ -155,6 +158,9 @@ def document_download_view(request, pk):
         filename=download_filename,
         content_type=document.file_type or 'application/octet-stream'
     )
+    response['Cache-Control'] = 'no-store, no-cache, must-revalidate, private'
+    response['Pragma'] = 'no-cache'
+    response['X-Content-Type-Options'] = 'nosniff'
     return response
 
 

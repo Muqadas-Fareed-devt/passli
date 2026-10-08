@@ -197,3 +197,163 @@ class SecurityAndVulnerabilityTests(TestCase):
         dash_after_logout = self.client_alice.get(reverse('dashboard'))
         self.assertEqual(dash_after_logout.status_code, 302)
         self.assertIn(reverse('login'), dash_after_logout.url)
+
+    # -------------------------------------------------------------
+    # 7. Cross-Site Scripting (XSS) Defense & HTML Auto-Escaping
+    # -------------------------------------------------------------
+    def test_xss_stored_payload_escaped(self):
+        """Verify script tags stored in document titles/descriptions are escaped in rendered HTML."""
+        xss_payload = "<script>alert('XSS_ATTACK_VECTOR')</script>"
+        doc = Document.objects.create(
+            user=self.alice,
+            title=f"Medical Record {xss_payload}",
+            description=f"Description containing {xss_payload}",
+            category="medical",
+            file=SimpleUploadedFile("xss_test.pdf", b"%PDF-1.4 test", content_type="application/pdf")
+        )
+
+        # List view inspection
+        res_list = self.client_alice.get(reverse('documents_list'))
+        self.assertEqual(res_list.status_code, 200)
+        self.assertNotContains(res_list, "<script>alert('XSS_ATTACK_VECTOR')</script>")
+        self.assertContains(res_list, "&lt;script&gt;alert(&#x27;XSS_ATTACK_VECTOR&#x27;)&lt;/script&gt;")
+
+        # Detail view inspection
+        res_detail = self.client_alice.get(reverse('document_detail', args=[doc.pk]))
+        self.assertEqual(res_detail.status_code, 200)
+        self.assertNotContains(res_detail, "<script>alert('XSS_ATTACK_VECTOR')</script>")
+        self.assertContains(res_detail, "&lt;script&gt;alert(&#x27;XSS_ATTACK_VECTOR&#x27;)&lt;/script&gt;")
+
+    # -------------------------------------------------------------
+    # 8. SQL Injection (SQLi) Defense via ORM Parameterization
+    # -------------------------------------------------------------
+    def test_sql_injection_defense_on_search_and_filters(self):
+        """Verify SQL injection payloads in queries do not break ORM or return unauthorized rows."""
+        sqli_payloads = [
+            "' OR '1'='1",
+            "'; DROP TABLE documents_document; --",
+            "1' UNION SELECT username, password FROM auth_user --",
+            "admin'--",
+            "' OR 1=1 #",
+        ]
+
+        for payload in sqli_payloads:
+            # Document list search
+            res = self.client_bob.get(f"{reverse('documents_list')}?q={payload}&category=all")
+            self.assertEqual(res.status_code, 200)
+            # Bob must NEVER see Alice's confidential documents
+            self.assertNotContains(res, "Alice_Confidential_Medical_History.pdf")
+
+    # -------------------------------------------------------------
+    # 9. Cross-Site Request Forgery (CSRF) Enforcement
+    # -------------------------------------------------------------
+    def test_csrf_protection_enforced_on_mutating_requests(self):
+        """Verify unauthenticated/untokened external POST requests are rejected with 403 CSRF failure."""
+        csrf_client = Client(enforce_csrf_checks=True)
+        # Attempt to post document delete without valid CSRF token
+        response = csrf_client.post(reverse('document_delete', args=[self.alice_doc.pk]))
+        self.assertEqual(response.status_code, 403)
+
+    # -------------------------------------------------------------
+    # 10. Unvalidated Redirect (Open Redirect) Defense
+    # -------------------------------------------------------------
+    def test_open_redirect_defense_on_login(self):
+        """Verify malicious external URLs in 'next' query param are rejected by login redirect."""
+        malicious_urls = [
+            "https://evil-phishing-site.com",
+            "//evil-phishing-site.com",
+            "http://attacker.com/steal-creds",
+            "javascript:alert(1)",
+        ]
+
+        for evil_url in malicious_urls:
+            login_res = self.client_bob.post(
+                f"{reverse('login')}?next={evil_url}",
+                {'username': 'bob_security', 'password': 'BobStrongPassword2026!'},
+                follow=False
+            )
+            # Must redirect safely to internal dashboard, not the evil target
+            self.assertEqual(login_res.status_code, 302)
+            self.assertEqual(login_res.url, reverse('dashboard'))
+
+    # -------------------------------------------------------------
+    # 11. Superadmin Privilege & Access Restriction (RBAC)
+    # -------------------------------------------------------------
+    def test_regular_user_cannot_access_superadmin_consoles(self):
+        """Verify non-superadmin accounts cannot access custom administrative suites and are redirected."""
+        admin_endpoints = [
+            reverse('admin_dashboard_overview'),
+            reverse('admin_dashboard_users'),
+            reverse('admin_dashboard_documents'),
+            reverse('admin_dashboard_passes'),
+            reverse('admin_dashboard_audit'),
+        ]
+
+        for endpoint in admin_endpoints:
+            res_alice = self.client_alice.get(endpoint)
+            self.assertEqual(res_alice.status_code, 302, f"Endpoint {endpoint} was directly accessible by regular user")
+            self.assertIn(reverse('login'), res_alice.url)
+
+    # -------------------------------------------------------------
+    # 12. Security Headers & Anti-Caching Enforcement
+    # -------------------------------------------------------------
+    def test_security_headers_and_anti_caching_on_file_streams(self):
+        """Verify document download and preview streams return anti-caching and nosniff headers."""
+        preview_res = self.client_alice.get(reverse('document_preview', args=[self.alice_doc.pk]))
+        self.assertEqual(preview_res.status_code, 200)
+        self.assertEqual(preview_res.headers.get('Cache-Control'), 'no-store, no-cache, must-revalidate, private')
+        self.assertEqual(preview_res.headers.get('X-Content-Type-Options'), 'nosniff')
+
+        download_res = self.client_alice.get(reverse('document_download', args=[self.alice_doc.pk]))
+        self.assertEqual(download_res.status_code, 200)
+        self.assertEqual(download_res.headers.get('Cache-Control'), 'no-store, no-cache, must-revalidate, private')
+        self.assertEqual(download_res.headers.get('X-Content-Type-Options'), 'nosniff')
+
+    # -------------------------------------------------------------
+    # 13. Server-Side Template Injection (SSTI) Neutrality
+    # -------------------------------------------------------------
+    def test_ssti_template_syntax_neutrality(self):
+        """Verify template syntax payloads ({{ 7*7 }}, {% debug %}) are treated as plain text."""
+        ssti_payload = "{{ 7*7 }} {% debug %} {{ request.user.password }}"
+        doc = Document.objects.create(
+            user=self.alice,
+            title=f"Record {ssti_payload}",
+            description=f"Desc {ssti_payload}",
+            category="medical",
+            file=SimpleUploadedFile("ssti.pdf", b"%PDF-1.4 ssti test", content_type="application/pdf")
+        )
+
+        res = self.client_alice.get(reverse('document_detail', args=[doc.pk]))
+        self.assertEqual(res.status_code, 200)
+        # Should not evaluate 7*7 = 49 or dump debug objects
+        self.assertNotContains(res, "49")
+        self.assertContains(res, "{{ 7*7 }}")
+
+    # -------------------------------------------------------------
+    # 14. Zero-Knowledge Cryptographic Key Storage
+    # -------------------------------------------------------------
+    def test_share_pass_zero_knowledge_key_hashing(self):
+        """Verify 8-character plaintext Share Keys are never stored in database or plaintext fields."""
+        from datetime import timedelta
+        from django.utils import timezone
+        from sharing.models import SharePass
+        from sharing.utils import generate_share_key
+
+        raw_key = generate_share_key()
+
+        share_pass = SharePass(
+            owner=self.alice,
+            title="ZK Cryptographic Test Pass",
+            expires_at=timezone.now() + timedelta(minutes=30)
+        )
+        share_pass.set_key(raw_key)
+        share_pass.save()
+        share_pass.documents.add(self.alice_doc)
+
+        # Refresh from database and assert raw key is not present in stored hash
+        share_pass.refresh_from_db()
+        self.assertTrue(share_pass.key_hash.startswith("pbkdf2_sha256$"))
+        self.assertNotIn(raw_key, share_pass.key_hash)
+        self.assertTrue(share_pass.verify_key(raw_key))
+        self.assertFalse(share_pass.verify_key("WRONG-KEY"))
+

@@ -308,6 +308,9 @@ def recipient_doc_preview_view(request, pass_id, doc_id):
         filename=filename,
         content_type=doc.file_type or 'application/octet-stream'
     )
+    response['Cache-Control'] = 'no-store, no-cache, must-revalidate, private'
+    response['Pragma'] = 'no-cache'
+    response['X-Content-Type-Options'] = 'nosniff'
     return response
 
 
@@ -357,6 +360,9 @@ def recipient_doc_download_view(request, pass_id, doc_id):
         filename=download_filename,
         content_type=doc.file_type or 'application/octet-stream'
     )
+    response['Cache-Control'] = 'no-store, no-cache, must-revalidate, private'
+    response['Pragma'] = 'no-cache'
+    response['X-Content-Type-Options'] = 'nosniff'
     return response
 
 
