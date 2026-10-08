@@ -8,7 +8,7 @@ To ensure high engineering standards, security robustness, and clean git history
 
 ## 🛠️ Code of Conduct
 
-All contributors and maintainers are expected to adhere to our [Code of Conduct](CODE_OF_CONDUCT.md). Please report any unacceptable behavior to `security@passli.dev`.
+All contributors and maintainers are expected to adhere to our [Code of Conduct](CODE_OF_CONDUCT.md). Please report any unacceptable behavior or queries to `alinawaz.code@gmail.com`.
 
 ---
 

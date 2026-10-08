@@ -44,7 +44,7 @@ We actively support and release security updates for the following versions of P
 
 If you discover a potential security vulnerability within Passli, please **do not open a public issue**. Instead, follow our responsible disclosure procedure:
 
-1. Send an email with full reproduction steps to: **`security@passli.dev`**
+1. Send an email with full reproduction steps to: **`alinawaz.code@gmail.com`**
 2. Include the following details in your report:
    - Description of the vulnerability and its potential impact.
    - Step-by-step instructions or proof-of-concept (PoC) code.

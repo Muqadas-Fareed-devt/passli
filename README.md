@@ -189,7 +189,7 @@ Passli is production-ready for deployment on **Railway**, **Render**, **Fly.io**
 
 ## 🛡️ Security & Responsible Disclosure
 
-Security and cryptographic isolation are core to Passli. For vulnerability disclosure guidelines, threat models, and cryptographic parameters, please refer to [SECURITY.md](SECURITY.md).
+Security and cryptographic isolation are core to Passli. For vulnerability disclosure guidelines, threat models, and cryptographic parameters, please refer to [SECURITY.md](SECURITY.md) or contact **[alinawaz.code@gmail.com](mailto:alinawaz.code@gmail.com)**.
 
 ---
 
@@ -199,6 +199,18 @@ Contributions, bug reports, and feature proposals are welcome! Please read [CONT
 
 ---
 
+## 📬 Contact & Support
+
+For project inquiries, partnerships, enterprise deployments, or general questions, connect via:
+
+- **Author & Maintainer**: Ali Nawaz
+- **Email**: [alinawaz.code@gmail.com](mailto:alinawaz.code@gmail.com)
+- **Live Demo**: [https://web-production-c1bd05e.up.railway.app](https://web-production-c1bd05e.up.railway.app)
+- **GitHub**: [@alinawazcode](https://github.com/alinawazcode)
+
+---
+
 ## 📄 License
 
 This project is open-source and licensed under the [MIT License](LICENSE).
+
