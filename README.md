@@ -199,14 +199,14 @@ Contributions, bug reports, and feature proposals are welcome! Please read [CONT
 
 ---
 
-## 📬 Contact & Support
+## 📬 Authors & Maintainers
 
-For project inquiries, partnerships, enterprise deployments, or general questions, connect via:
+For project inquiries, partnerships, enterprise deployments, or general questions, connect with the project maintainers:
 
-- **Author & Maintainer**: Ali Nawaz
-- **Email**: [alinawaz.code@gmail.com](mailto:alinawaz.code@gmail.com)
+- **Ali Nawaz** — Lead Architecture & Backend Engineering &bull; [@alinawazcode](https://github.com/alinawazcode)
+- **Muqadas Fareed** — Co-Author & Project Maintainer &bull; [@Muqadas-Fareed-devt](https://github.com/Muqadas-Fareed-devt)
+- **Email Contact**: [alinawaz.code@gmail.com](mailto:alinawaz.code@gmail.com)
 - **Live Demo**: [https://web-production-c1bd05e.up.railway.app](https://web-production-c1bd05e.up.railway.app)
-- **GitHub**: [@alinawazcode](https://github.com/alinawazcode)
 
 ---
 

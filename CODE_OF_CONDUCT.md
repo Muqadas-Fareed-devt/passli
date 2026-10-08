@@ -59,7 +59,7 @@ representative at an online or offline event.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported to the community leaders responsible for enforcement at
+reported to the project maintainers (**Ali Nawaz** [@alinawazcode](https://github.com/alinawazcode) and **Muqadas Fareed** [@Muqadas-Fareed-devt](https://github.com/Muqadas-Fareed-devt)) at:
 `alinawaz.code@gmail.com`.
 All complaints will be reviewed and investigated promptly and fairly.
 

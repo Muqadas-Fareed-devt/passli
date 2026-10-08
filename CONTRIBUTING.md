@@ -6,9 +6,15 @@ To ensure high engineering standards, security robustness, and clean git history
 
 ---
 
-## 🛠️ Code of Conduct
+## 🛠️ Code of Conduct & Maintainers
 
-All contributors and maintainers are expected to adhere to our [Code of Conduct](CODE_OF_CONDUCT.md). Please report any unacceptable behavior or queries to `alinawaz.code@gmail.com`.
+All contributors and maintainers are expected to adhere to our [Code of Conduct](CODE_OF_CONDUCT.md). 
+
+Project Maintainers:
+- **Ali Nawaz** ([@alinawazcode](https://github.com/alinawazcode))
+- **Muqadas Fareed** ([@Muqadas-Fareed-devt](https://github.com/Muqadas-Fareed-devt))
+
+Please report any unacceptable behavior or queries to `alinawaz.code@gmail.com`.
 
 ---
 
