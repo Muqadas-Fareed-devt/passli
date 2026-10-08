@@ -206,8 +206,7 @@ For project inquiries, partnerships, enterprise deployments, or general question
 - **Ali Nawaz** — Lead Architecture & Backend Engineering &bull; [@alinawazcode](https://github.com/alinawazcode)
 - **Muqadas Fareed** — Co-Author & Project Maintainer &bull; [@Muqadas-Fareed-devt](https://github.com/Muqadas-Fareed-devt)
 - **Email Contact**: [alinawaz.code@gmail.com](mailto:alinawaz.code@gmail.com)
-- **Live Demo**: [https://web-production-c1bd05e.up.railway.app](https://web-production-c1bd05e.up.railway.app)
-
+- **Live Demo (Temporary Link)**: [https://web-production-c1bd05e.up.railway.app](https://web-production-c1bd05e.up.railway.app)
 ---
 
 ## 📄 License
