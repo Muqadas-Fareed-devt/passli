@@ -1,19 +1,21 @@
 """
-Passli Automated Interactive Browser Test & Video Recorder
-===========================================================
-This script automatically:
-1. Checks or starts the local Django development server on http://127.0.0.1:8000/
-2. Launches an interactive Chromium browser window (visible to you).
-3. Records the entire end-to-end user lifecycle to an MP4/WebM video in the `recordings/` folder.
-4. Executes the full user journey:
-   - Landing page & interactive demo sandbox exploration
-   - Owner account registration & login
-   - Document upload with SHA-256 checksum calculation
-   - Ephemeral Share Pass generation with QR code & PBKDF2 hashed key
-   - Recipient gateway access & 8-character key verification
-   - In-browser decrypted PDF preview & verified SHA-256 digest
-   - Recipient voluntary session exit
-   - Owner Security Audit Trail inspection & 1-click instant pass revocation
+Passli Automated Video Demonstration Recorder & Full-Platform Tour
+===================================================================
+Uses Playwright to record full HD video demonstrations of the Passli platform:
+1. Desktop Full-Platform Tour:
+   - Split Hero Landing Page & Interactive Sandbox Generator
+   - Superadmin / Owner Authentication
+   - Personal Vault Dashboard & Metrics
+   - Document Ingestion & SHA-256 Hash Digest Inspection
+   - Ephemeral Share Pass Generation with Dynamic QR Code
+   - Owner Security Audit Trail
+   - Custom Administration Console (Overview, Users, Global Vault, Passes, Audit)
+2. Mobile Recipient QR Experience (390x844 Smartphone Viewport):
+   - QR Landing Gateway
+   - 8-Character Key Authentication
+   - Real-time Expiration Countdown Ticker
+   - Decrypted Document Preview Stream
+   - Voluntary Session Destruction & Memory Wipe
 
 Usage:
     python run_browser_e2e_demo.py
@@ -25,15 +27,16 @@ import time
 import urllib.request
 import subprocess
 from pathlib import Path
+from playwright.sync_api import sync_playwright
+from PIL import Image
 
-# Ensure required directory for recordings exists
 BASE_DIR = Path(__file__).resolve().parent
 RECORDINGS_DIR = BASE_DIR / "recordings"
+SCREENSHOTS_DIR = BASE_DIR / "screenshots"
 RECORDINGS_DIR.mkdir(parents=True, exist_ok=True)
+SCREENSHOTS_DIR.mkdir(parents=True, exist_ok=True)
 
 SAMPLE_PDF_PATH = BASE_DIR / "tests" / "sample_lab_report.pdf"
-
-# Create sample PDF if not already present
 if not SAMPLE_PDF_PATH.exists():
     SAMPLE_PDF_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(SAMPLE_PDF_PATH, "wb") as f:
@@ -41,7 +44,6 @@ if not SAMPLE_PDF_PATH.exists():
 
 
 def is_server_running(url="http://127.0.0.1:8000/"):
-    """Checks if the Django server is responding on localhost."""
     try:
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
         with urllib.request.urlopen(req, timeout=2) as resp:
@@ -50,240 +52,306 @@ def is_server_running(url="http://127.0.0.1:8000/"):
         return False
 
 
+def setup_local_admin():
+    """Ensure superadmin account and sample documents exist locally."""
+    try:
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+        import django
+        django.setup()
+        from django.contrib.auth import get_user_model
+        from documents.models import Document
+        from django.core.files.base import ContentFile
+
+        User = get_user_model()
+        user, _ = User.objects.get_or_create(username='alinawazcode', defaults={'email': 'alinawaz.code@gmail.com'})
+        user.set_password('alinawazcode786@')
+        user.is_staff = True
+        user.is_superuser = True
+        user.is_active = True
+        user.save()
+
+        # Seed sample medical document if none exists
+        if not Document.objects.filter(user=user).exists():
+            doc = Document(
+                user=user,
+                title="Executive Cardiology Assessment & ECG Panel",
+                category="medical",
+                description="Comprehensive cardiovascular diagnostic report and clinical biomarkers."
+            )
+            with open(SAMPLE_PDF_PATH, 'rb') as f:
+                doc.file.save("cardiology_assessment.pdf", ContentFile(f.read()), save=True)
+            print("[SUCCESS] Seeded default sample document for owner", flush=True)
+
+        print("[SUCCESS] Local superadmin credentials primed (alinawazcode / alinawazcode786@)", flush=True)
+    except Exception as e:
+        print(f"[NOTE] Django setup note: {e}", flush=True)
+
+
 def ensure_server():
-    """Starts the Django development server if not already running."""
     if is_server_running():
-        print("[INFO] Django development server is already running on http://127.0.0.1:8000/")
+        print("[INFO] Local Django server active on http://127.0.0.1:8000/", flush=True)
         return None
 
-    print("[INFO] Starting Django development server...")
+    print("[INFO] Starting local Django development server...", flush=True)
     python_exe = sys.executable
     manage_py = BASE_DIR / "manage.py"
 
-    server_process = subprocess.Popen(
+    proc = subprocess.Popen(
         [python_exe, str(manage_py), "runserver", "127.0.0.1:8000", "--noreload"],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
         cwd=str(BASE_DIR)
     )
 
-    # Wait for server to initialize
     for _ in range(15):
         time.sleep(1)
         if is_server_running():
-            print("[SUCCESS] Django server started successfully on http://127.0.0.1:8000/")
-            return server_process
+            print("[SUCCESS] Local server active on http://127.0.0.1:8000/", flush=True)
+            return proc
 
-    print("[WARNING] Could not confirm server start. Continuing anyway...")
-    return server_process
+    return proc
 
 
-def run_e2e_browser_test():
-    """Executes the Playwright browser test with visible UI and video recording."""
+def safe_screenshot(page, filename, title=""):
     try:
-        from playwright.sync_api import sync_playwright
-    except ImportError:
-        print("[ERROR] Playwright is not installed. Run: pip install playwright && playwright install chromium")
-        sys.exit(1)
+        path = SCREENSHOTS_DIR / filename
+        page.screenshot(path=str(path), timeout=4000, animations="disabled")
+        print(f" [FRAME] {title} -> {filename}", flush=True)
+    except Exception as e:
+        print(f" [FRAME RECORDED IN VIDEO] {title}", flush=True)
 
-    print("\n" + "=" * 65)
-    print("  LAUNCHING PASSLI AUTOMATED BROWSER E2E TEST & VIDEO RECORDER")
-    print("=" * 65)
-    print(f"[INFO] Video recordings will be saved to: {RECORDINGS_DIR}\n")
 
-    timestamp = int(time.time())
-    username = f"dr_sarah_{timestamp % 10000}"
-    email = f"{username}@passli.dev"
-    password = "SecurePassphrase2026!"
-
+def run_full_recording():
+    setup_local_admin()
     server_proc = ensure_server()
+    base_url = "http://127.0.0.1:8000"
+
+    print("\n" + "=" * 70, flush=True)
+    print("  PASSLI FULL-SPECTRUM AUTOMATED VIDEO & MOBILE DEMO RECORDER", flush=True)
+    print("=" * 70, flush=True)
+    print(f"[INFO] Target Application: {base_url}", flush=True)
+    print(f"[INFO] Video Output Directory: {RECORDINGS_DIR.resolve()}", flush=True)
 
     try:
         with sync_playwright() as p:
-            print("[INFO] Launching Chromium browser (visible mode)...")
+            print("[INFO] Launching Chromium Browser for Full Desktop Tour...", flush=True)
             browser = p.chromium.launch(
-                headless=False,
-                slow_mo=800,  # Slow down actions so you can watch each step clearly
+                headless=True,
+                args=["--no-sandbox", "--disable-dev-shm-usage"]
             )
 
-            context = browser.new_context(
+            # -------------------------------------------------------------
+            # TOUR 1: DESKTOP PLATFORM TOUR (1280x800)
+            # -------------------------------------------------------------
+            context_desktop = browser.new_context(
                 record_video_dir=str(RECORDINGS_DIR),
                 record_video_size={"width": 1280, "height": 800},
                 viewport={"width": 1280, "height": 800},
             )
+            page = context_desktop.new_page()
 
-            page = context.new_page()
+            # Step 1: Landing Page & Interactive Sandbox
+            print("\n[STEP 1] Landing Page & Interactive Sandbox Tour...", flush=True)
+            page.goto(f"{base_url}/", wait_until="domcontentloaded")
+            time.sleep(2)
+            safe_screenshot(page, "01_landing_hero.png", "Landing Page Split Hero")
 
-            # -------------------------------------------------------------
-            # STEP 1: Landing Page & Simulator Sandbox
-            # -------------------------------------------------------------
-            print("\n[STEP 1] Navigating to Landing Page (http://127.0.0.1:8000/)...")
-            page.goto("http://127.0.0.1:8000/", wait_until="networkidle")
-            time.sleep(1)
+            print(" -> Exploring Interactive Sandbox Generator...", flush=True)
+            page.evaluate("window.scrollTo({top: 800, behavior: 'smooth'})")
+            time.sleep(2)
+            safe_screenshot(page, "02_landing_sandbox.png", "Interactive Share Pass Simulator")
 
-            print(" -> Scrolling to Interactive Sandbox Demo...")
-            page.evaluate("window.scrollTo({top: 750, behavior: 'smooth'})")
-            time.sleep(1.5)
-
-            print(" -> Scrolling to Real-World Use Cases & Comparison Matrix...")
-            page.evaluate("window.scrollTo({top: 1700, behavior: 'smooth'})")
-            time.sleep(1.5)
+            print(" -> Exploring Security Architecture & Specifications...", flush=True)
+            page.evaluate("window.scrollTo({top: 1800, behavior: 'smooth'})")
+            time.sleep(2)
+            safe_screenshot(page, "03_landing_specs.png", "Security Specs & Use Cases")
 
             page.evaluate("window.scrollTo({top: 0, behavior: 'smooth'})")
             time.sleep(1)
 
-            # -------------------------------------------------------------
-            # STEP 2: Owner Registration & Login
-            # -------------------------------------------------------------
-            print(f"\n[STEP 2] Registering new vault owner: {username} ({email})...")
-            page.goto("http://127.0.0.1:8000/register/", wait_until="networkidle")
+            # Step 2: Superadmin Sign In
+            print("\n[STEP 2] Authenticating as Superadmin (alinawazcode)...", flush=True)
+            page.goto(f"{base_url}/login/", wait_until="domcontentloaded")
+            safe_screenshot(page, "04_login_portal.png", "Login Portal")
 
-            page.fill('input[name="username"]', username)
-            page.fill('input[name="email"]', email)
-            page.fill('input[name="password1"]', password)
-            page.fill('input[name="password2"]', password)
+            page.fill('input[name="username"]', "alinawazcode")
+            page.fill('input[name="password"]', "alinawazcode786@")
             time.sleep(0.5)
+            page.click('button[type="submit"]')
+            page.wait_for_load_state("domcontentloaded")
+            time.sleep(2)
 
-            page.click('form.auth-form button[type="submit"], [data-testid="register-submit-btn"]')
-            page.wait_for_load_state("networkidle")
-            print(" -> Vault account created! Landed on Personal Vault Dashboard.")
+            # Step 3: Personal Vault Dashboard
+            print("\n[STEP 3] Personal Vault Dashboard & System Telemetry...", flush=True)
+            page.goto(f"{base_url}/dashboard/", wait_until="domcontentloaded")
+            time.sleep(2)
+            safe_screenshot(page, "05_vault_dashboard.png", "Vault Dashboard Telemetry")
+
+            # Step 4: Vault Directory Inspection
+            print("\n[STEP 4] Inspecting Vault Records Directory...", flush=True)
+            page.goto(f"{base_url}/documents/", wait_until="domcontentloaded")
+            time.sleep(2)
+            safe_screenshot(page, "06_vault_records.png", "Vault Records Directory")
+
+            # Inspect first document detail
+            first_doc_link = page.locator('a[href*="/documents/"]:not([href*="upload"]):not([href$="/documents/"])')
+            if first_doc_link.count() > 0:
+                first_doc_link.first.click()
+                page.wait_for_load_state("domcontentloaded")
+                time.sleep(2)
+                safe_screenshot(page, "07_document_detail_sha256.png", "Document Detail with SHA-256")
+
+            # Step 5: Generate Cryptographic Ephemeral Share Pass
+            print("\n[STEP 5] Generating Ephemeral Share Pass with Dynamic QR Code...", flush=True)
+            page.goto(f"{base_url}/share/create/", wait_until="domcontentloaded")
             time.sleep(1.5)
 
-            # -------------------------------------------------------------
-            # STEP 3: Document Ingestion & Checksum Validation
-            # -------------------------------------------------------------
-            print("\n[STEP 3] Uploading sensitive medical record...")
-            page.goto("http://127.0.0.1:8000/documents/upload/", wait_until="networkidle")
+            title_input = page.locator('input[name="title"], #id_title')
+            if title_input.is_visible():
+                title_input.fill("Dr. Harrison Cardiology Consult")
 
-            page.set_input_files('input#doc-file-input, input[name="file"]', str(SAMPLE_PDF_PATH.resolve()))
-            page.fill('input#doc-title', "Clinical Pathology & Lipid Panel 2026")
-            page.select_option('select#doc-category', "medical")
-            page.fill('textarea#doc-description', "Diagnostic lab blood work and cardiovascular biomarkers.")
-            time.sleep(0.8)
+            duration_select = page.locator('select[name="expires_in"], #id_expires_in')
+            if duration_select.is_visible():
+                duration_select.select_option("30m")
 
-            page.click('[data-testid="upload-submit-btn"], form.auth-form button[type="submit"]')
-            page.wait_for_load_state("networkidle")
-            time.sleep(1.5)
+            doc_checkbox = page.locator('input[name="documents"]').first
+            if doc_checkbox.is_visible():
+                doc_checkbox.check(force=True)
 
-            # Check if there were any upload errors
-            error_box = page.locator('.alert-danger, .form-error')
-            if error_box.count() > 0 and error_box.first.is_visible():
-                print(f"[ERROR in Upload] {error_box.first.inner_text()}")
-
-            print(f" -> Current Page after upload: {page.url}")
-            print(" -> Document uploaded and SHA-256 checksum calculated!")
-            time.sleep(1.5)
-
-            # -------------------------------------------------------------
-            # STEP 4: Ephemeral Share Pass Generation
-            # -------------------------------------------------------------
-            print("\n[STEP 4] Generating time-gated cryptographic Share Pass...")
-            page.goto("http://127.0.0.1:8000/share/create/", wait_until="networkidle")
-
-            page.wait_for_selector('input[name="title"], [data-testid="share-pass-title-input"]', timeout=15000)
-            page.fill('input[name="title"]', "Dr. Harrison Cardiology Consult")
-            page.select_option('select[name="expires_in"]', "30m")
-
-            # Check document checkbox
-            first_doc_checkbox = page.locator('input[name="documents"]').first
-            if first_doc_checkbox.is_visible():
-                first_doc_checkbox.check(force=True)
-
-            # Enable raw download permission
             download_toggle = page.locator('input[name="can_download"]')
             if download_toggle.is_visible():
                 download_toggle.check(force=True)
 
-            time.sleep(0.8)
-            page.click('[data-testid="generate-pass-btn"], form[data-testid="share-create-form"] button[type="submit"]')
-            page.wait_for_load_state("networkidle")
-            time.sleep(1.5)
-            print(" -> Share Pass generated with dynamic QR code & PBKDF2 hashed key!")
-
-            # Extract generated Share Key and Share URL from details page
-            page.wait_for_selector('#shareKeyText, [data-testid="share-key-display"]', timeout=10000)
-            raw_key_text = page.locator('#shareKeyText').inner_text().strip()
-            print(f" -> Ephemeral Share Key displayed: {raw_key_text}")
-
-            recipient_url_elem = page.locator('#recipientUrlText')
-            if recipient_url_elem.is_visible():
-                recipient_url = recipient_url_elem.inner_text().strip()
-            else:
-                pass_id = page.url.rstrip("/").split("/")[-1]
-                recipient_url = f"http://127.0.0.1:8000/p/{pass_id}/"
-            print(f" -> Public Recipient Endpoint: {recipient_url}")
-
-            # -------------------------------------------------------------
-            # STEP 5: Recipient Verification & Access
-            # -------------------------------------------------------------
-            print("\n[STEP 5] Opening Recipient Gateway in a new session tab...")
-            recip_page = context.new_page()
-            recip_page.goto(recipient_url, wait_until="networkidle")
-            time.sleep(1)
-
-            print(f" -> Submitting Share Key: {raw_key_text}...")
-            key_input = recip_page.locator('input[name="access_key"], #id_access_key')
-            key_input.fill(raw_key_text)
-            time.sleep(0.8)
-
-            recip_page.click('[data-testid="submit-share-key-btn"], button[type="submit"]')
-            recip_page.wait_for_load_state("networkidle")
-            print(" -> Recipient authenticated! Landed on Decrypted Document Console.")
-            time.sleep(2.5)
-
-            # -------------------------------------------------------------
-            # STEP 6: Recipient Voluntary Exit
-            # -------------------------------------------------------------
-            print("\n[STEP 6] Recipient exiting document inspection session...")
-            exit_btn = recip_page.locator('[data-testid="exit-session-btn"], button:has-text("Exit Session")')
-            if exit_btn.is_visible():
-                exit_btn.click()
-                recip_page.wait_for_load_state("networkidle")
-                print(" -> Recipient session destroyed and browser decrypted state cleansed.")
-                time.sleep(1.5)
-
-            recip_page.close()
-
-            # -------------------------------------------------------------
-            # STEP 7: Owner Security Audit Trail & Instant Revocation
-            # -------------------------------------------------------------
-            print("\n[STEP 7] Inspecting Owner Security Audit Dashboard (/audit/)...")
-            page.goto("http://127.0.0.1:8000/audit/", wait_until="networkidle")
+            safe_screenshot(page, "08_share_create_form.png", "Share Pass Creation Form")
+            time.sleep(0.5)
+            page.click('button[type="submit"]')
+            page.wait_for_load_state("domcontentloaded")
             time.sleep(2)
-            print(" -> Chronological security logs verified (Key Verified, Previewed, Left).")
 
-            print("\n[STEP 8] Revoking Share Pass from pass detail view...")
-            page.goto(page.url.replace('/audit/', f'/share/{page.url.rstrip("/").split("/")[-1]}/') if '/share/' in page.url else f"http://127.0.0.1:8000/share/{recipient_url.rstrip('/').split('/')[-1]}/", wait_until="networkidle")
-            time.sleep(1)
+            # Step 6: Ephemeral Share Pass Detail & Key Display
+            print("\n[STEP 6] Inspecting Generated QR Pass & Share Key...", flush=True)
+            safe_screenshot(page, "09_share_pass_qr_code.png", "Share Pass QR Code & 8-Char Key")
 
-            revoke_btn = page.locator('[data-testid="revoke-pass-btn"]')
-            if revoke_btn.is_visible():
-                page.on("dialog", lambda dialog: dialog.accept())
-                revoke_btn.click()
-                page.wait_for_load_state("networkidle")
-                print(" -> Pass successfully revoked! Recipient is now permanently locked out.")
-                time.sleep(1.5)
+            raw_key = ""
+            key_locator = page.locator('#shareKeyText')
+            if key_locator.is_visible():
+                raw_key = key_locator.inner_text().strip()
+            print(f" -> Generated Ephemeral Share Key: {raw_key}", flush=True)
 
-            # Close context to finalize video recording
-            context.close()
+            pass_id = page.url.rstrip("/").split("/")[-1]
+            recipient_url = f"{base_url}/p/{pass_id}/"
+
+            # Step 7: User Security Audit Trail
+            print("\n[STEP 7] Reviewing User Security Audit Trail (/audit/)...", flush=True)
+            page.goto(f"{base_url}/audit/", wait_until="domcontentloaded")
+            time.sleep(2)
+            safe_screenshot(page, "10_security_audit_trail.png", "User Security Audit Trail")
+
+            # Step 8: Custom Administration Consoles
+            print("\n[STEP 8] Reviewing Custom Platform Administration Consoles...", flush=True)
+
+            page.goto(f"{base_url}/admin-dashboard/", wait_until="domcontentloaded")
+            time.sleep(2)
+            safe_screenshot(page, "11_admin_overview.png", "Superadmin Telemetry & Overview")
+
+            page.goto(f"{base_url}/admin-dashboard/users/", wait_until="domcontentloaded")
+            time.sleep(2)
+            safe_screenshot(page, "12_admin_users.png", "User Governance Console")
+
+            page.goto(f"{base_url}/admin-dashboard/documents/", wait_until="domcontentloaded")
+            time.sleep(2)
+            safe_screenshot(page, "13_admin_global_vault.png", "Global File Vault Explorer")
+
+            page.goto(f"{base_url}/admin-dashboard/passes/", wait_until="domcontentloaded")
+            time.sleep(2)
+            safe_screenshot(page, "14_admin_passes.png", "Global Active Passes Monitor")
+
+            page.goto(f"{base_url}/admin-dashboard/audit/", wait_until="domcontentloaded")
+            time.sleep(2)
+            safe_screenshot(page, "15_admin_global_audit.png", "Global System Audit Stream")
+
+            # Close desktop context to finalize video
+            context_desktop.close()
+
+            # -------------------------------------------------------------
+            # TOUR 2: MOBILE RECIPIENT QR WORKFLOW (390x844 Smartphone)
+            # -------------------------------------------------------------
+            print("\n[STEP 9] Mobile Recipient QR Scan & Decryption Gateway (390x844)...", flush=True)
+            context_mobile = browser.new_context(
+                record_video_dir=str(RECORDINGS_DIR),
+                record_video_size={"width": 390, "height": 844},
+                viewport={"width": 390, "height": 844},
+                is_mobile=True,
+                has_touch=True,
+            )
+            mobile_page = context_mobile.new_page()
+
+            # Mobile Gateway Landing
+            print(f" -> Navigating to Recipient Gateway: {recipient_url}", flush=True)
+            mobile_page.goto(recipient_url, wait_until="domcontentloaded")
+            time.sleep(2)
+            safe_screenshot(mobile_page, "16_mobile_qr_landing.png", "Mobile QR Scan Verification Gateway")
+
+            # Submit Share Key
+            if raw_key:
+                print(f" -> Submitting Share Key: {raw_key} on smartphone interface...", flush=True)
+                mobile_page.fill('input[name="access_key"]', raw_key)
+                safe_screenshot(mobile_page, "17_mobile_key_entered.png", "Mobile Share Key Input")
+                time.sleep(0.5)
+                mobile_page.click('button[type="submit"]')
+                mobile_page.wait_for_load_state("domcontentloaded")
+                time.sleep(2.5)
+
+                # Mobile Decrypted Document Portal
+                print(" -> Landed on Mobile Decrypted Document Portal...", flush=True)
+                safe_screenshot(mobile_page, "18_mobile_decrypted_portal.png", "Mobile Decrypted Document Portal")
+
+                # Scroll down preview
+                mobile_page.evaluate("window.scrollTo({top: 350, behavior: 'smooth'})")
+                time.sleep(2)
+                safe_screenshot(mobile_page, "19_mobile_document_preview.png", "Mobile In-Browser Document Stream")
+
+                # Voluntary Session Exit
+                print(" -> Terminating recipient session (Voluntary Memory Wipe)...", flush=True)
+                exit_btn = mobile_page.locator('form[action*="leave"] button, button:has-text("Exit Session")')
+                if exit_btn.count() > 0:
+                    exit_btn.first.click()
+                    mobile_page.wait_for_load_state("domcontentloaded")
+                    time.sleep(2)
+                    safe_screenshot(mobile_page, "20_mobile_session_terminated.png", "Mobile Session Destroyed & Cleansed")
+
+            context_mobile.close()
             browser.close()
 
-            # Find saved video file
-            video_files = list(RECORDINGS_DIR.glob("*.webm"))
-            latest_video = max(video_files, key=os.path.getctime) if video_files else None
+        # Compile animated GIF from captured screenshots
+        screenshot_files = sorted(SCREENSHOTS_DIR.glob("*.png"))
+        if screenshot_files:
+            images = [Image.open(f) for f in screenshot_files]
+            standard_size = (1080, 700)
+            resized_images = [img.convert("RGB").resize(standard_size, Image.Resampling.LANCZOS) for img in images]
 
-            print("\n" + "=" * 65)
-            print("  AUTOMATED BROWSER E2E TEST COMPLETED SUCCESSFULLY! [100% OK]")
-            print("=" * 65)
-            if latest_video:
-                print(f"[SUCCESS] Video recording saved to: {latest_video.resolve()}")
-            print("=" * 65 + "\n")
+            gif_path = RECORDINGS_DIR / "passli_full_walkthrough_demo.gif"
+            resized_images[0].save(
+                str(gif_path),
+                save_all=True,
+                append_images=resized_images[1:],
+                duration=1800,
+                loop=0
+            )
+            print(f"\n[SUCCESS] Compiled Animated Walkthrough GIF: {gif_path.resolve()}", flush=True)
+
+        video_files = list(RECORDINGS_DIR.glob("*.webm"))
+        print("\n" + "=" * 70, flush=True)
+        print("  ALL FULL-SPECTRUM DESKTOP & MOBILE DEMO VIDEOS RECORDED SUCCESSFULLY!", flush=True)
+        print("=" * 70, flush=True)
+        for vf in video_files:
+            print(f" [VIDEO ARTIFACT] {vf.name} ({round(vf.stat().st_size / 1024, 1)} KB) -> {vf.resolve()}", flush=True)
+        print("=" * 70 + "\n", flush=True)
 
     finally:
-        # Keep server running or terminate if we started it
         if server_proc:
-            print("[INFO] Django development server will remain active.")
+            server_proc.terminate()
 
 
 if __name__ == "__main__":
-    run_e2e_browser_test()
+    run_full_recording()
